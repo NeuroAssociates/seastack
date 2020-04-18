@@ -1,4 +1,4 @@
-namespace seastack {
+namespace Seastack {
 
     
 }

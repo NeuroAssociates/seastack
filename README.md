@@ -1,6 +1,6 @@
 ![Logo of Seastack](./img/logo.png)
 
-# Seastack
+# Seastack.js
 A JavaScript library for generating web documents based on data
 
 
@@ -22,7 +22,7 @@ OR
 
 ```javascript
 document.addEventListener('DOMContentLoaded', function () {
-    Waikiki.init();
+    Seastack.init();
 }, false);
 ```
 
