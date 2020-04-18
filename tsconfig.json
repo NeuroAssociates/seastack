@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "target": "es5",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        /* 
+        You need to add the "declaration: true" flag. 
+        This will generate the typings required for the consumers to use this library. 
+        */
+        "declaration": true,
+        "outDir": "./dist"
+    },
+    "include": [
+        "src/**/*"
+    ]
+}

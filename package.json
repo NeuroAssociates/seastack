@@ -1,0 +1,7 @@
+{
+    "name": "seastack",
+    "version": "0.0.1",
+    "description": "A JavaScript library for generating web documents based on data.",
+    "main": "dist/seastack.js",
+    "types": "dist/seastack.d.ts"
+}
