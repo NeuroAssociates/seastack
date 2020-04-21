@@ -1,1 +1,1 @@
-{"version":3,"file":"seastack-onload.js","sourceRoot":"","sources":["../src/seastack-onload.ts"],"names":[],"mappings":"AAAA,OAAO,CAAC,GAAG,CAAC,aAAa,CAAC,CAAC"}
+{"version":3,"file":"seastack-onload.js","sourceRoot":"","sources":["../src/seastack-onload.ts"],"names":[],"mappings":";;;IAEA,QAAQ,CAAC,gBAAgB,CAAC,kBAAkB,EAAE,GAAG,EAAE;QAC/C,IAAI,QAAQ,GAAG,IAAI,mBAAQ,CAAC,IAAI,EAAE,CAAC;QACnC,QAAQ,CAAC,WAAW,CAAC,QAAQ,CAAC,IAAI,CAAC,CAAC,YAAY,EAAE,CAAC;IACvD,CAAC,EAAE,KAAK,CAAC,CAAC"}
