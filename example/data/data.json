@@ -1,14 +1,14 @@
 {
     "seadata": [
         {
-            "title": "title",
+            "title": "KOR",
             "link": "http://",
-            "description": "description"
+            "description": "description for KOREA"
         },
         {
-            "title": "title",
+            "title": "USA",
             "link": "http://",
-            "description": "description"
-        },
+            "description": "description for United State"
+        }
     ]
 }

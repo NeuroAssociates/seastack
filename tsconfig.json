@@ -4,6 +4,9 @@
         "target": "es6",
         "noImplicitAny": true,
         "sourceMap": true,
+        
+        // "strict": true,
+        
         /* 
         You need to add the "declaration: true" flag. 
         This will generate the typings required for the consumers to use this library. 

@@ -4,15 +4,10 @@
         <meta charset="UTF-8" />
         <link rel="shortcut icon" href="" />
         <script type="text/javascript" src="../dist/seastack.js"></script>
+        <script type="text/javascript" src="../dist/seastack-onload.js"></script>
         <title>Seastack.js example</title>
     </head>
     <body>
         <div sea-src="./html/component.html" sea-data="./data/data.json"></div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var seastack = new Seastack.Core();
-                seastack.getElements(document.body).fillElements();
-            }, false);
-        </script>
     </body>
 </html>

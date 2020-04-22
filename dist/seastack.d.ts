@@ -1,24 +1,22 @@
-export declare namespace Seastack {
+declare namespace Seastack {
     let tagNames: {
-        "source": string;
-        "dataPath": string;
-        "value": string;
-        "attributeName": string;
-        "attributeValue": string;
-        "attributeMap": string;
+        source: string;
+        dataPath: string;
+        value: string;
+        attributeName: string;
+        attributeValue: string;
+        attributeMap: string;
     };
     let entryElements: string[];
-    interface SeaData {
-        seaData: Array<any>;
-    }
     class SeaElement {
         element: Element;
         seaSource: string;
         seaDataPath: string;
-        seaData: SeaData;
+        seaData: Array<any>;
         constructor(targetElement: Element);
         fillData(): SeaElement;
         fillHTML(): SeaElement;
+        HTMLwithData(html: string): string;
         fill(): SeaElement;
     }
     class Core {

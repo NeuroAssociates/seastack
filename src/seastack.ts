@@ -33,44 +33,14 @@ namespace Seastack {
         "LI"
     ];
 
-    export interface SeaData {
-        seaData: Array<any>;
-    }
 
-    interface HttpResponse<T> extends Response {
-        parsedBody?: T;
-    }
-
-    export async function http<T>(request: RequestInfo, type: string): Promise<HttpResponse<T>> {
-
-        const response: HttpResponse<T> = await fetch(request);
-      
-        try {
-            switch(type) {
-            case "json":
-                response.parsedBody = await response.json();
-                break;
-            case "html":
-                //response.parsedBody = response;
-                break;
-            default:
-                break;
-            }
-        } catch (exception) {}
-      
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-
-        return response;
-    }
 
     export class SeaElement {
 
         element: Element;
         seaSource: string;
         seaDataPath: string;
-        seaData: SeaData;
+        seaData: Array<any>;
 
         constructor(targetElement: Element) {
 
@@ -90,29 +60,120 @@ namespace Seastack {
             return this;
         }
         
-        async fillData() {
+        fillData(): SeaElement {
 
-            console.log(this);
+            if (this.seaSource === null || this.seaDataPath === null) return this;
 
-            const response = await http<SeaData>(this.seaDataPath, "json");
-            // this.seaData = response;
+            fetch(this.seaDataPath, { mode: 'cors' })
+            .then((response) => {                
+                if (response.status !== 200) {
+                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
+                    return;
+                }
 
-            return;
+                return response.json();
+            })
+            .then((json) => {                
+                if (json.seadata !== null) {
+                    this.seaData = json.seadata;
+                }
+            })
+            .catch(function(err) {
+                console.log('Fetch Error ' +  err + ' while fetching ' + this.seaDataPath);
+            });
+
+            return this;
         }
 
         fillHTML(): SeaElement {
 
-            
-            return;
+            if (this.seaSource === null) return this;
+
+            fetch(this.seaSource, { mode: 'cors' })
+            .then((response) => {                
+                if (response.status !== 200) {
+                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
+                    return;
+                }
+
+                return response.text();
+            })
+            .then((html) => {
+                if (this.seaData !== null) {
+                    this.element.innerHTML = this.HTMLwithData(html);
+                } else {
+                    this.element.innerHTML = html;
+                }
+            })
+            .catch(function(err) {
+                console.log('Fetch Error: ' + err + ' while fetching ' + this.seaSource);
+            });
+
+            return this;
+        }
+
+        HTMLwithData(html: string): string {
+
+            let rootElement = document.createElement("seaDataSet");
+
+            this.seaData.forEach(data => {
+
+                let itemElement = document.createElement("seaData");
+                itemElement.innerHTML = html;
+
+                entryElements.forEach(entryElement => {
+
+                    let targetElements = [...itemElement.getElementsByTagName(entryElement)];
+
+                    targetElements.forEach(element => {
+
+                        var isValueless = true;
+
+                        let seaAttributeName = element.getAttribute(tagNames.attributeName);
+                        let seaAttributeValue = element.getAttribute(tagNames.attributeValue);
+                        
+                        if (seaAttributeName !== null && seaAttributeName.length > 0
+                            && seaAttributeValue !== null && seaAttributeValue.length > 0
+                            && data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
+
+                                element.setAttribute(seaAttributeName, data[seaAttributeValue]);
+                                isValueless = false;
+                        }
+                        
+                        let seaValue = element.getAttribute(tagNames.value);
+                        
+                        if (seaValue !== null && seaValue.length > 0
+                            && data[seaValue] !== null && data[seaValue].length > 0) {
+
+                            element.innerHTML = data[seaValue];
+                            isValueless = false;
+                        }
+                            
+                        let seaValuelessHidden = element.getAttribute("sea-valueless-hidden");
+
+                        if (seaValuelessHidden !== null && seaValuelessHidden.length > 0 
+                            && isValueless === true) {
+                            
+                            element.setAttribute("hidden", "");
+                        }
+                    });
+                });
+
+                rootElement.innerHTML = rootElement.innerHTML + itemElement.innerHTML;
+            });
+
+            return rootElement.innerHTML;
         }
         
         fill(): SeaElement {
 
-            this.fillData()
-            this.fillHTML();
+            this.fillData().fillHTML();
+
             return this;
         }
     }
+
+
 
     export class Core {
 
@@ -148,6 +209,7 @@ namespace Seastack {
             this.seaElements.forEach(element => {
                 element.fill();
             });
+
             return this;
         }
     }
