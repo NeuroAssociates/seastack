@@ -3,5 +3,16 @@
     "version": "0.0.1",
     "description": "A JavaScript library for generating web documents based on data.",
     "main": "dist/seastack.js",
-    "types": "dist/seastack.d.ts"
+    "types": "dist/seastack.d.ts",
+    "homepage": "https://github.com/NeuroAssociates/seastack",
+    "license": "MIT",
+    "author": {
+        "name": "Neuro Associates Co., Ltd",
+        "email": "developer@neuroacs.com",
+        "url": "http://neuroacs.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NeuroAssociates/seastack.git"
+    }
 }
