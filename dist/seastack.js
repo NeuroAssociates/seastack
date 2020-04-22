@@ -48,7 +48,7 @@ var Seastack;
             return this;
         }
         fillData() {
-            if (this.seaSource === null || this.seaDataPath === null)
+            if (this.seaSource === undefined || this.seaDataPath === null)
                 return this;
             fetch(this.seaDataPath, { mode: 'cors' })
                 .then((response) => {
@@ -64,12 +64,12 @@ var Seastack;
                 }
             })
                 .catch(function (err) {
-                console.log('Fetch Error ' + err + ' while fetching ' + this.seaDataPath);
+                console.log('Fetch Error: ' + err);
             });
             return this;
         }
         fillHTML() {
-            if (this.seaSource === null)
+            if (this.seaSource === undefined)
                 return this;
             fetch(this.seaSource, { mode: 'cors' })
                 .then((response) => {
@@ -80,7 +80,11 @@ var Seastack;
                 return response.text();
             })
                 .then((html) => {
-                if (this.seaData !== null) {
+                if (this.seaData !== undefined) {
+                    // console.log(html);  
+                    // console.log(this.seaSource);  
+                    // console.log(this.seaData);  
+                    // console.log(this.HTMLwithData(html);
                     this.element.innerHTML = this.HTMLwithData(html);
                 }
                 else {
@@ -88,7 +92,7 @@ var Seastack;
                 }
             })
                 .catch(function (err) {
-                console.log('Fetch Error: ' + err + ' while fetching ' + this.seaSource);
+                console.log('Fetch Error:' + err);
             });
             return this;
         }
@@ -111,7 +115,7 @@ var Seastack;
                         }
                         let seaValue = element.getAttribute(Seastack.tagNames.value);
                         if (seaValue !== null && seaValue.length > 0
-                            && data[seaValue] !== null && data[seaValue].length > 0) {
+                            && data[seaValue] !== undefined && data[seaValue].length > 0) {
                             element.innerHTML = data[seaValue];
                             isValueless = false;
                         }

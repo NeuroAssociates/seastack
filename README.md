@@ -6,7 +6,7 @@ A JavaScript library for generating web documents based on data. The final goal 
 
 # How to use?
 
-Do reference sample project is this. The path of the script file can be different.
+Do reference sample project. The path of the script file can be different.
 
 ## Preparing in HTML code
 
@@ -43,14 +43,24 @@ You can freely specify data at a one-dimensional level in the form of an array i
 {
     "seadata": [
         {
-            "title": "데잇걸즈",
-            "link": "http://dataitgirls.com",
-            "description": "데잇걸즈는 소프트웨어 여성인재 사회진출 활성화를 위해 과학기술정보통신부와 한국정보화진흥원이 주관하여 운영하는 소프트웨어 여성인재 전문 교육 및 취업지원 프로그램입니다."
+            "number": "+1",
+            "name": "Canada",
+            "link" : "https://en.wikipedia.org/wiki/Canada"
         },
         {
-            "title": "꿈꾸는 데이터 디자이너",
-            "link": "http://datadesigner.org",
-            "description": "데이터 디자이너는 데이터를 아우르는 작업(Data Works)의 전영역을 다루며, 이를 통해 새로운 의미의 기획을 해내는 인재를 의미합니다."
+            "number": "+1",
+            "name": "United States",
+            "link" : "https://en.wikipedia.org/wiki/United_States"
+        },
+        {
+            "number": "+20",
+            "name": "Egypt",
+            "link" : "https://en.wikipedia.org/wiki/Egypt"
+        },
+        {
+            "number": "+30",
+            "name": "Greece",
+            "link" : "https://en.wikipedia.org/wiki/Greece"
         }
     ]
 }
@@ -61,11 +71,10 @@ You can freely specify data at a one-dimensional level in the form of an array i
 Make the HTML fragment to which data will be applied as a separate file. We call this a component. In the component, you can connect the data by specifying the attributes prefixed with sea to the following target tags.
 
 ```html
-<div class="div_title" sea-value="title"></div>
-<div sea-value="description"></div>
-<div class="div_linkbox">
-    <a sea-attribute-name="href" sea-attribute-value="link" target="_blank">
-        <span sea-value="title"></span> 웹사이트
+<div>
+    <span sea-val="number"></span>
+    <a sea-att="href" sea-att-val="link">
+        <span sea-val="name"></span>
     </a>
 </div>
 ```
@@ -74,7 +83,7 @@ Attribute | Value
 ------------ | -------------
 sea-att | attribute name
 sea-att-val | attribute value
-sea-val | value
+sea-val | value to replace inner HTML
 
 
 ## Apply
@@ -82,7 +91,7 @@ sea-val | value
 Connect the path of the HTML file that becomes the component and the data path to the first HTML file with the attribute prefixed with sea. The contents of the component are duplicated as many as the number of items defined in the data to replace the contents of the specified HTML element. You may not specify the data path. In this way, the contents of the component are statically imported and applied.
 
 ```html
-<div class="div_description" sea-source="../html/about_educations.html" sea-data="../data/about_educations.json"></div>
+<div sea-src="./html/component.html" sea-data="./data/data.json"></div>
 ```
 
 Attribute | Value
@@ -95,19 +104,29 @@ sea-data | Path of Json data
 If you apply as above, you will get the following result.
 
 ```html
-<div class="div_description" sea-source="../html/about_educations.html" sea-data="../data/about_educations.json">
-    <div class="div_title" sea-value="title"></div>
-    <div sea-value="description"></div>
-    <div class="div_linkbox">
-        <a sea-attribute-name="href" sea-attribute-value="link" target="_blank">
-            <span sea-value="title"></span> 웹사이트
+<div sea-src="./html/component.html" sea-data="./data/data.json">
+    <div>
+        <span sea-val="number">+1</span>
+        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/Canada">
+            <span sea-val="name">Canada</span>
         </a>
     </div>
-    <div class="div_title" sea-value="title"></div>
-    <div sea-value="description"></div>
-    <div class="div_linkbox">
-        <a sea-attribute-name="href" sea-attribute-value="link" target="_blank">
-            <span sea-value="title"></span> 웹사이트
+    <div>
+        <span sea-val="number">+1</span>
+        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/United_States">
+            <span sea-val="name">United States</span>
+        </a>
+    </div>
+    <div>
+        <span sea-val="number">+20</span>
+        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/Egypt">
+            <span sea-val="name">Egypt</span>
+        </a>
+    </div>
+    <div>
+        <span sea-val="number">+30</span>
+        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/Greece">
+            <span sea-val="name">Greece</span>
         </a>
     </div>
 </div>
