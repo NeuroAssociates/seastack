@@ -1,7 +1,9 @@
 ![Logo of Seastack](./img/logo.png)
 
 # Seastack.js
-A JavaScript library for generating web documents based on data. The final goal of the project is to quickly generate web documents by associating HTML code with JSON-formatted data files without additional JavaScript coding. Using this library, you can conveniently update the website without updating the HTML code by simply updating the JSON file.
+*A JavaScript library for generating web documents based on data*
+
+The final goal of the project is to quickly generate web documents by associating HTML code with JSON-formatted data files without additional JavaScript coding. Using this library, you can conveniently update the website without updating the HTML code by simply updating the JSON file.
 
 
 # How to use?
