@@ -99,7 +99,7 @@ Connect the path of the HTML file that becomes the component and the data path t
 Attribute | Value
 ------------ | -------------
 sea-src | Path of HTML as component
-sea-data | Path of Json data
+sea-data | Path of JSON data
 
 ## Result
 
