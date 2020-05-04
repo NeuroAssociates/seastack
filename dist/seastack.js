@@ -37,17 +37,17 @@ var Seastack;
                 return null;
             let seaSource = targetElement.getAttribute(Seastack.tagNames.source);
             let seaDataPath = targetElement.getAttribute(Seastack.tagNames.dataPath);
-            if (seaSource !== null && seaSource.length > 0) {
+            if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
                 this.element = targetElement;
                 this.seaSource = seaSource;
                 this.seaDataPath = seaDataPath;
             }
-            else {
-                return null;
-            }
             return this;
         }
-        fillData() {
+        isValid() {
+            return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
+        }
+        getData() {
             if (this.seaSource === undefined || this.seaDataPath === null)
                 return this;
             fetch(this.seaDataPath, { mode: 'cors' })
@@ -61,16 +61,25 @@ var Seastack;
                 .then((json) => {
                 if (json.seadata !== null) {
                     this.seaData = json.seadata;
+                    // async / await is needed!!!!!!!!!!!!!!
+                    console.log("getData() : then " + this.seaDataPath);
                 }
             })
                 .catch(function (err) {
                 console.log('Fetch Error: ' + err);
             });
+            // async / await is needed!!!!!!!!!!!!!!
+            console.log("getData() : return " + this.seaDataPath);
             return this;
         }
         fillHTML() {
             if (this.seaSource === undefined)
                 return this;
+            if (this.seaSource === "#") {
+                let html = this.element.innerHTML;
+                this.element.innerHTML = this.HTMLwithData(html);
+                return this;
+            }
             fetch(this.seaSource, { mode: 'cors' })
                 .then((response) => {
                 if (response.status !== 200) {
@@ -80,16 +89,7 @@ var Seastack;
                 return response.text();
             })
                 .then((html) => {
-                if (this.seaData !== undefined) {
-                    // console.log(html);  
-                    // console.log(this.seaSource);  
-                    // console.log(this.seaData);  
-                    // console.log(this.HTMLwithData(html);
-                    this.element.innerHTML = this.HTMLwithData(html);
-                }
-                else {
-                    this.element.innerHTML = html;
-                }
+                this.element.innerHTML = this.HTMLwithData(html);
             })
                 .catch(function (err) {
                 console.log('Fetch Error:' + err);
@@ -97,6 +97,11 @@ var Seastack;
             return this;
         }
         HTMLwithData(html) {
+            if (this.seaData === undefined) {
+                console.log(this);
+                console.log(this.seaData);
+                return html;
+            }
             let rootElement = document.createElement("seaDataSet");
             this.seaData.forEach(data => {
                 let itemElement = document.createElement("seaData");
@@ -131,7 +136,7 @@ var Seastack;
             return rootElement.innerHTML;
         }
         fill() {
-            this.fillData().fillHTML();
+            this.getData().fillHTML();
             return this;
         }
     }
@@ -148,7 +153,7 @@ var Seastack;
                 let targetElements = [...rootElement.getElementsByTagName(entryElement)];
                 targetElements.forEach(targetElement => {
                     var seaElement = new SeaElement(targetElement);
-                    if (seaElement !== null) {
+                    if (seaElement.isValid() === true) {
                         this.seaElements.push(seaElement);
                     }
                 });

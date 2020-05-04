@@ -14,7 +14,8 @@ declare namespace Seastack {
         seaDataPath: string;
         seaData: Array<any>;
         constructor(targetElement: Element);
-        fillData(): SeaElement;
+        isValid(): boolean;
+        getData(): SeaElement;
         fillHTML(): SeaElement;
         HTMLwithData(html: string): string;
         fill(): SeaElement;

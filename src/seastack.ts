@@ -49,18 +49,20 @@ namespace Seastack {
             let seaSource = targetElement.getAttribute(tagNames.source);
             let seaDataPath = targetElement.getAttribute(tagNames.dataPath);
 
-            if (seaSource !== null && seaSource.length > 0) {
+            if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
                 this.element = targetElement;
                 this.seaSource = seaSource;
                 this.seaDataPath = seaDataPath;
-            } else {
-                return null;
             }
 
             return this;
         }
+
+        isValid(): boolean {
+            return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
+        }
         
-        fillData(): SeaElement {
+        getData(): SeaElement {
 
             if (this.seaSource === undefined || this.seaDataPath === null) return this;
 
@@ -76,19 +78,30 @@ namespace Seastack {
             .then((json) => {                
                 if (json.seadata !== null) {
                     this.seaData = json.seadata;
+                    
+                    // async / await is needed!!!!!!!!!!!!!!
+                    console.log("getData() : then " + this.seaDataPath);
                 }
             })
             .catch(function(err) {
                 console.log('Fetch Error: ' + err);
             });
 
+            // async / await is needed!!!!!!!!!!!!!!
+            console.log("getData() : return " + this.seaDataPath);
             return this;
         }
 
         fillHTML(): SeaElement {
 
             if (this.seaSource === undefined) return this;
-
+            
+            if (this.seaSource === "#") {
+                let html = this.element.innerHTML;
+                this.element.innerHTML = this.HTMLwithData(html);
+                return this;
+            }
+            
             fetch(this.seaSource, { mode: 'cors' })
             .then((response) => {                
                 if (response.status !== 200) {
@@ -99,15 +112,7 @@ namespace Seastack {
                 return response.text();
             })
             .then((html) => {
-                if (this.seaData !== undefined) {
-                    // console.log(html);  
-                    // console.log(this.seaSource);  
-                    // console.log(this.seaData);  
-                    // console.log(this.HTMLwithData(html);
-                    this.element.innerHTML = this.HTMLwithData(html);
-                } else {
-                    this.element.innerHTML = html;
-                }
+                this.element.innerHTML = this.HTMLwithData(html);
             })
             .catch(function(err) {
                 console.log('Fetch Error:' + err);
@@ -117,6 +122,12 @@ namespace Seastack {
         }
 
         HTMLwithData(html: string): string {
+
+            if (this.seaData === undefined) {
+                console.log(this);
+                console.log(this.seaData);
+                return html;
+            }
 
             let rootElement = document.createElement("seaDataSet");
 
@@ -171,7 +182,7 @@ namespace Seastack {
         
         fill(): SeaElement {
 
-            this.fillData().fillHTML();
+            this.getData().fillHTML();
 
             return this;
         }
@@ -199,12 +210,12 @@ namespace Seastack {
 
                 targetElements.forEach(targetElement => {
                     var seaElement = new SeaElement(targetElement);
-                    if (seaElement !== null) {
+                    if (seaElement.isValid() === true) {
                         this.seaElements.push(seaElement);
                     }
                 });
             });
-
+            
             return this;
         }
 

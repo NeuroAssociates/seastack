@@ -9,14 +9,50 @@
         <title>Seastack.js example</title>
     </head>
     <body>
-        <header sea-src="./html/title.html" sea-data="./data/title.json"></header>
+        <header sea-src="./html/title.html" sea-data="./data/title.json">
+            <!-- The title.html will be replaced here with data from title.json -->
+        </header>
+
+        <header sea-src="#" sea-data="./data/title.json">
+            <!-- This child elements will be replaced here with data from title.json -->
+            <h1 sea-val="title"></h1>
+            <img sea-att="src" sea-att-val="logo" />
+        </header>
 
         <article>
             <div>The following data is output as an example of Seastack.js.</div>
+        </article>
+        
+        <article>
             <h2>The country calling codes</h2>
-            <div sea-src="./html/component.html" sea-data="./data/data.json"></div>
+            <div sea-src="./html/tel-codes.html" sea-data="./data/tel-codes.json">
+                <!-- The tel-codes.html will be replaced here with data from tel-codes.json -->
+            </div>
         </article>
 
-        <footer sea-src="./html/info.html"></footer>
+        <article>
+            <h2>The country calling codes (inside)</h2>
+            <div sea-src="#" sea-data="./data/tel-codes.json">
+                <!-- The this child elements will be replaced here with data from tel-codes.json -->
+                <div>
+                    <span sea-val="number"></span>
+                    <a sea-att="href" sea-att-val="link">
+                        <span sea-val="name"></span>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <article>
+            <h2>The states, commonwealth, territory and military "states" of United States</h2>
+                
+            <div class="rTableRow" sea-src="./html/us-states.html" sea-data="./data/us-states.json">
+                <!-- The us-states.html will be replaced here with data from us-states.json -->
+            </div>
+        </article>
+
+        <footer sea-src="./html/info.html">
+            <!-- The info.html will be replaced here -->
+        </footer>
     </body>
 </html>
