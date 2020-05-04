@@ -1,11 +1,11 @@
 declare namespace Seastack {
     let tagNames: {
-        source: string;
-        dataPath: string;
-        value: string;
-        attributeName: string;
-        attributeValue: string;
-        attributeMap: string;
+        "source": string;
+        "dataPath": string;
+        "value": string;
+        "attributeName": string;
+        "attributeValue": string;
+        "attributeMap": string;
     };
     let entryElements: string[];
     class SeaElement {
