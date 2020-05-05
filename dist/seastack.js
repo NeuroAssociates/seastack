@@ -147,18 +147,24 @@ var Seastack;
         }
         getElements(rootElement) {
             this.seaElements = new Array();
-            if (!(rootElement instanceof HTMLElement))
-                return this;
-            Seastack.entryElements.forEach(entryElement => {
-                let targetElements = [...rootElement.getElementsByTagName(entryElement)];
-                targetElements.forEach(targetElement => {
-                    var seaElement = new SeaElement(targetElement);
-                    if (seaElement.isValid() === true) {
-                        this.seaElements.push(seaElement);
-                    }
-                });
-            });
+            this.getElementsFromChildren(rootElement);
             return this;
+        }
+        getElementsFromChildren(rootElement) {
+            if (!(rootElement instanceof Element))
+                return;
+            [...rootElement.children].forEach(childElement => {
+                var seaElement = new SeaElement(childElement);
+                if (seaElement.isValid() === true) {
+                    // console.log(seaElement);
+                    this.seaElements.push(seaElement);
+                }
+                else {
+                    // console.log("DOM TOUR");
+                    this.getElements(childElement);
+                }
+            });
+            return;
         }
         fillElements() {
             this.seaElements.forEach(element => {

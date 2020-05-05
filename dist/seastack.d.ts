@@ -1,11 +1,11 @@
 declare namespace Seastack {
     let tagNames: {
-        "source": string;
-        "dataPath": string;
-        "value": string;
-        "attributeName": string;
-        "attributeValue": string;
-        "attributeMap": string;
+        source: string;
+        dataPath: string;
+        value: string;
+        attributeName: string;
+        attributeValue: string;
+        attributeMap: string;
     };
     let entryElements: string[];
     class SeaElement {
@@ -23,7 +23,8 @@ declare namespace Seastack {
     class Core {
         seaElements: Array<SeaElement>;
         constructor();
-        getElements(rootElement: HTMLElement): Core;
+        getElements(rootElement: Element): Core;
+        getElementsFromChildren(rootElement: Element): void;
         fillElements(): Core;
     }
 }
