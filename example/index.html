@@ -9,11 +9,6 @@
         <title>Seastack.js example</title>
     </head>
     <body>
-<!--
-        <header sea-src="./html/title.html" sea-data="./data/title.json">
-            <!-- The title.html will be replaced here with data from title.json --
-        </header>
--->
         <header sea-src="#" sea-data="./data/title.json">
             <!-- This child elements will be replaced here with data from title.json -->
             <h1 sea-val="title"></h1>
@@ -28,19 +23,6 @@
             <h2>The country calling codes</h2>
             <div sea-src="./html/tel-codes.html" sea-data="./data/tel-codes.json">
                 <!-- The tel-codes.html will be replaced here with data from tel-codes.json -->
-            </div>
-        </article>
-
-        <article>
-            <h2>The country calling codes (inside)</h2>
-            <div sea-src="#" sea-data="./data/tel-codes.json">
-                <!-- The this child elements will be replaced here with data from tel-codes.json -->
-                <div>
-                    <span sea-val="number"></span>
-                    <a sea-att="href" sea-att-val="link">
-                        <span sea-val="name"></span>
-                    </a>
-                </div>
             </div>
         </article>
 

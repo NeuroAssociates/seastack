@@ -15,10 +15,10 @@ declare namespace Seastack {
         seaData: Array<any>;
         constructor(targetElement: Element);
         isValid(): boolean;
-        getData(): SeaElement;
-        fillHTML(): SeaElement;
+        fill(): Promise<void>;
+        getData(): Promise<SeaElement>;
+        fillHTML(): Promise<SeaElement>;
         HTMLwithData(html: string): string;
-        fill(): SeaElement;
     }
     class Core {
         seaElements: Array<SeaElement>;

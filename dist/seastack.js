@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var Seastack;
 (function (Seastack) {
     Seastack.tagNames = {
@@ -40,66 +49,76 @@ var Seastack;
             if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
                 this.element = targetElement;
                 this.seaSource = seaSource;
-                this.seaDataPath = seaDataPath;
+                this.seaDataPath = seaDataPath; // none => null
             }
             return this;
         }
         isValid() {
             return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
         }
-        getData() {
-            if (this.seaSource === undefined || this.seaDataPath === null)
-                return this;
-            fetch(this.seaDataPath, { mode: 'cors' })
-                .then((response) => {
-                if (response.status !== 200) {
-                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
+        fill() {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (this.isValid() === false)
                     return;
-                }
-                return response.json();
-            })
-                .then((json) => {
-                if (json.seadata !== null) {
-                    this.seaData = json.seadata;
-                    // async / await is needed!!!!!!!!!!!!!!
-                    console.log("getData() : then " + this.seaDataPath);
-                }
-            })
-                .catch(function (err) {
-                console.log('Fetch Error: ' + err);
+                yield this.getData();
+                yield this.fillHTML();
+                return;
             });
-            // async / await is needed!!!!!!!!!!!!!!
-            console.log("getData() : return " + this.seaDataPath);
-            return this;
+        }
+        getData() {
+            return new Promise((resolve) => {
+                if (this.isValid() === false || this.seaDataPath === null) {
+                    return resolve(this);
+                }
+                fetch(this.seaDataPath, { mode: 'cors' })
+                    .then((response) => {
+                    if (response.status !== 200) {
+                        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
+                        return;
+                    }
+                    return response.json();
+                })
+                    .then((json) => {
+                    if (json.seadata !== null) {
+                        this.seaData = json.seadata;
+                    }
+                    return resolve(this);
+                })
+                    .catch(function (err) {
+                    console.log('Fetch Error: ' + err);
+                    return resolve(this);
+                });
+            });
         }
         fillHTML() {
-            if (this.seaSource === undefined)
-                return this;
-            if (this.seaSource === "#") {
-                let html = this.element.innerHTML;
-                this.element.innerHTML = this.HTMLwithData(html);
-                return this;
-            }
-            fetch(this.seaSource, { mode: 'cors' })
-                .then((response) => {
-                if (response.status !== 200) {
-                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
-                    return;
+            return new Promise((resolve) => {
+                if (this.isValid() === false)
+                    return this;
+                if (this.seaSource === "#") {
+                    let html = this.element.innerHTML;
+                    this.element.innerHTML = this.HTMLwithData(html);
+                    return resolve(this);
                 }
-                return response.text();
-            })
-                .then((html) => {
-                this.element.innerHTML = this.HTMLwithData(html);
-            })
-                .catch(function (err) {
-                console.log('Fetch Error:' + err);
+                fetch(this.seaSource, { mode: 'cors' })
+                    .then((response) => {
+                    if (response.status !== 200) {
+                        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
+                        return;
+                    }
+                    return response.text();
+                })
+                    .then((html) => {
+                    this.element.innerHTML = this.HTMLwithData(html);
+                    return resolve(this);
+                })
+                    .catch(function (err) {
+                    console.log('Fetch Error:' + err);
+                    return resolve(this);
+                });
             });
-            return this;
         }
         HTMLwithData(html) {
             if (this.seaData === undefined) {
-                console.log(this);
-                console.log(this.seaData);
                 return html;
             }
             let rootElement = document.createElement("seaDataSet");
@@ -135,10 +154,6 @@ var Seastack;
             });
             return rootElement.innerHTML;
         }
-        fill() {
-            this.getData().fillHTML();
-            return this;
-        }
     }
     Seastack.SeaElement = SeaElement;
     class Core {
@@ -156,12 +171,10 @@ var Seastack;
             [...rootElement.children].forEach(childElement => {
                 var seaElement = new SeaElement(childElement);
                 if (seaElement.isValid() === true) {
-                    // console.log(seaElement);
                     this.seaElements.push(seaElement);
                 }
                 else {
-                    // console.log("DOM TOUR");
-                    this.getElements(childElement);
+                    this.getElementsFromChildren(childElement);
                 }
             });
             return;

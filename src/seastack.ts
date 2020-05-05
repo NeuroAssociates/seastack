@@ -52,7 +52,7 @@ namespace Seastack {
             if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
                 this.element = targetElement;
                 this.seaSource = seaSource;
-                this.seaDataPath = seaDataPath;
+                this.seaDataPath = seaDataPath; // none => null
             }
 
             return this;
@@ -62,70 +62,87 @@ namespace Seastack {
             return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
         }
         
-        getData(): SeaElement {
+        async fill() {
 
-            if (this.seaSource === undefined || this.seaDataPath === null) return this;
+            if (this.isValid() === false) return;
 
-            fetch(this.seaDataPath, { mode: 'cors' })
-            .then((response) => {                
-                if (response.status !== 200) {
-                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
-                    return;
-                }
-
-                return response.json();
-            })
-            .then((json) => {                
-                if (json.seadata !== null) {
-                    this.seaData = json.seadata;
-                    
-                    // async / await is needed!!!!!!!!!!!!!!
-                    console.log("getData() : then " + this.seaDataPath);
-                }
-            })
-            .catch(function(err) {
-                console.log('Fetch Error: ' + err);
-            });
-
-            // async / await is needed!!!!!!!!!!!!!!
-            console.log("getData() : return " + this.seaDataPath);
-            return this;
+            await this.getData();
+            await this.fillHTML();
+            
+            return;
         }
 
-        fillHTML(): SeaElement {
+        getData(): Promise<SeaElement> {
 
-            if (this.seaSource === undefined) return this;
-            
-            if (this.seaSource === "#") {
-                let html = this.element.innerHTML;
-                this.element.innerHTML = this.HTMLwithData(html);
-                return this;
-            }
-            
-            fetch(this.seaSource, { mode: 'cors' })
-            .then((response) => {                
-                if (response.status !== 200) {
-                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
-                    return;
+            return new Promise((resolve: Function) => {
+
+                if (this.isValid() === false || this.seaDataPath === null) {
+                    return resolve(this);
                 }
-
-                return response.text();
-            })
-            .then((html) => {
-                this.element.innerHTML = this.HTMLwithData(html);
-            })
-            .catch(function(err) {
-                console.log('Fetch Error:' + err);
+    
+                fetch(this.seaDataPath, { mode: 'cors' })
+                .then((response) => {                
+                    if (response.status !== 200) {
+                        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
+                        return;
+                    }
+    
+                    return response.json();
+                })
+                .then((json) => {                
+                    if (json.seadata !== null) {
+                        this.seaData = json.seadata;
+                    }
+    
+                    return resolve(this);
+                })
+                .catch(function(err) {
+                    console.log('Fetch Error: ' + err);
+                    return resolve(this);
+                });
+    
             });
 
-            return this;
+        }
+
+        fillHTML(): Promise<SeaElement> {
+
+            return new Promise((resolve: Function) => {
+
+                if (this.isValid() === false) return this;
+    
+                if (this.seaSource === "#") {
+                    let html = this.element.innerHTML;
+                    this.element.innerHTML = this.HTMLwithData(html);
+                    
+                    return resolve(this);
+                }
+                
+                fetch(this.seaSource, { mode: 'cors' })
+                .then((response) => {                
+                    if (response.status !== 200) {
+                        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
+                        return;
+                    }
+    
+                    return response.text();
+                })
+                .then((html) => {
+                    this.element.innerHTML = this.HTMLwithData(html);
+                    return resolve(this);
+                })
+                .catch(function(err) {
+                    console.log('Fetch Error:' + err);
+                    return resolve(this);
+                });
+
+            });
+
         }
 
         HTMLwithData(html: string): string {
 
             if (this.seaData === undefined) {
-                console.log(this);
-                console.log(this.seaData);
                 return html;
             }
 
@@ -179,13 +196,6 @@ namespace Seastack {
 
             return rootElement.innerHTML;
         }
-        
-        fill(): SeaElement {
-
-            this.getData().fillHTML();
-
-            return this;
-        }
     }
 
 
@@ -207,18 +217,20 @@ namespace Seastack {
         }
 
         getElementsFromChildren(rootElement: Element) {
+            
             if (!(rootElement instanceof Element)) return;
             
             [...rootElement.children].forEach(childElement => {
+
                 var seaElement = new SeaElement(childElement);
+                
                 if (seaElement.isValid() === true) {
-                    // console.log(seaElement);
                     this.seaElements.push(seaElement);
                 } else {
-                    // console.log("DOM TOUR");
-                    this.getElements(childElement);
+                    this.getElementsFromChildren(childElement);
                 }
             });
+            
             return;
         }
 
