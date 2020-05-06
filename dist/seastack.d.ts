@@ -6,6 +6,7 @@ declare namespace Seastack {
         valuelessHidden: string;
         attributeName: string;
         attributeValue: string;
+        attributeValuelessHidden: string;
         attributeSet: string;
     };
     class SeaAttribute {

@@ -2,6 +2,12 @@
     "seadata": [
         {
             "number": "+1",
+            "name": "blank link",
+            "link" : "",
+            "target": "_blank"
+        },
+        {
+            "number": "+1",
             "name": "Canada",
             "link" : "https://en.wikipedia.org/wiki/Canada",
             "target": "_blank"
