@@ -1,0 +1,64 @@
+{
+    "seadata": [
+        {
+            "number": "+1",
+            "name": "Canada",
+            "link" : "https://en.wikipedia.org/wiki/Canada",
+            "target": "_blank"
+        },
+        {
+            "number": "+1",
+            "name": "United States",
+            "link" : "https://en.wikipedia.org/wiki/United_States",
+            "target": "_blank"
+        },
+        {
+            "number": "+20",
+            "name": "Egypt",
+            "link" : "https://en.wikipedia.org/wiki/Egypt",
+            "target": "_blank"
+        },
+        {
+            "number": "+30",
+            "name": "Greece",
+            "link" : "https://en.wikipedia.org/wiki/Greece",
+            "target": "_blank"
+        },
+        {
+            "number": "+51",
+            "name": "Peru",
+            "link" : "https://en.wikipedia.org/wiki/Peru",
+            "target": "_blank"
+        },
+        {
+            "number": "+60",
+            "name": "Malaysia",
+            "link" : "https://en.wikipedia.org/wiki/Malaysia",
+            "target": "_blank"
+        },
+        {
+            "number": "+7",
+            "name": "Russia",
+            "link" : "https://en.wikipedia.org/wiki/Russia",
+            "target": "_blank"
+        },
+        {
+            "number": "+81",
+            "name": "Japan",
+            "link" : "https://en.wikipedia.org/wiki/Japan",
+            "target": "_blank"
+        },
+        {
+            "number": "+82",
+            "name": "Republic of Korea",
+            "link" : "https://en.wikipedia.org/wiki/South_Korea",
+            "target": "_blank"
+        },
+        {
+            "number": "+90",
+            "name": "Turkey",
+            "link" : "https://en.wikipedia.org/wiki/Turkey",
+            "target": "_blank"
+        }
+    ]
+}

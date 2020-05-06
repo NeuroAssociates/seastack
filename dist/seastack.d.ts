@@ -3,26 +3,35 @@ declare namespace Seastack {
         source: string;
         dataPath: string;
         value: string;
+        valuelessHidden: string;
         attributeName: string;
         attributeValue: string;
-        attributeMap: string;
+        attributeSet: string;
     };
-    let entryElements: string[];
+    class SeaAttribute {
+        name: string;
+        value: string;
+        constructor(name: string, value: string);
+    }
     class SeaElement {
         element: Element;
         seaSource: string;
         seaDataPath: string;
         seaData: Array<any>;
+        seaAttributes: Array<SeaAttribute>;
         constructor(targetElement: Element);
-        fillData(): SeaElement;
-        fillHTML(): SeaElement;
+        isValid(): boolean;
+        fill(): Promise<void>;
+        getData(): Promise<SeaElement>;
+        fillHTML(): Promise<SeaElement>;
         HTMLwithData(html: string): string;
-        fill(): SeaElement;
+        HTMLElementWithData(element: Element, data: any): Element;
     }
     class Core {
         seaElements: Array<SeaElement>;
         constructor();
-        getElements(rootElement: HTMLElement): Core;
+        getElements(rootElement: Element): Core;
+        getElementsFromChildren(rootElement: Element): void;
         fillElements(): Core;
     }
 }
