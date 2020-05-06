@@ -129,8 +129,6 @@ var Seastack;
                         this.seaAttributes.push(seaAttribute);
                     }
                     else if (seaAttributeValuelessHidden !== null) {
-                        console.log(seaAttributeValuelessHidden);
-                        console.log(data[seaAttributeValue]);
                         childElement.setAttribute("hidden", "");
                     }
                 }
