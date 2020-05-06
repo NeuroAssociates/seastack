@@ -41,7 +41,7 @@ namespace Seastack {
             if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
                 this.element = targetElement;
                 this.seaSource = seaSource;
-                this.seaDataPath = seaDataPath; // none => null
+                this.seaDataPath = seaDataPath;
             }
 
             return this;
@@ -99,8 +99,6 @@ namespace Seastack {
             return new Promise((resolve: Function) => {
 
                 if (this.isValid() === false) return this;
-
-                // console.log(this);
     
                 if (this.seaSource === "#") {
                     let html = this.element.innerHTML;
@@ -165,11 +163,6 @@ namespace Seastack {
                         
                     let seaAttribute = new SeaAttribute(seaAttributeName, seaAttributeValue);
                     this.seaAttributes.push(seaAttribute);
-                    // childElement.setAttribute(seaAttributeName, data[seaAttributeValue]);
-                    // isValueless = false;
-                    
-                    // console.log(seaAttributeName);
-                    // console.log(seaAttributeValue);
                 }
                     
                 let seaAttributeSet = childElement.getAttribute(tagNames.attributeSet);
@@ -189,13 +182,9 @@ namespace Seastack {
                         }
                     });
                 }
+                
                     
-                    
-                    
-                // console.log(this.seaAttributes);
-
                 this.seaAttributes.forEach(attribute => {
-                    // console.log(attribute);
                     childElement.setAttribute(attribute.name, data[attribute.value]);
                 });
 
@@ -211,7 +200,7 @@ namespace Seastack {
                 else if (data[seaValue] !== undefined && data[seaValue].length > 0) {
                     childElement.innerHTML = data[seaValue];
                 }
-                else if (seaValuelessHidden !== null) { //} && seaValuelessHidden.toUpperCase() === "TRUE") {
+                else if (seaValuelessHidden !== null) {
                     childElement.setAttribute("hidden", "");
                     
                     console.log(element);
