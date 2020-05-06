@@ -16,7 +16,7 @@ var Seastack;
         "valuelessHidden": "sea-valueless-hidden",
         "attributeName": "sea-att",
         "attributeValue": "sea-att-val",
-        "attributeValuelessHidden": "sea-attribute-valueless-hidden",
+        "attributeValuelessHidden": "sea-att-valueless-hidden",
         "attributeSet": "sea-atts"
     };
     class SeaAttribute {
