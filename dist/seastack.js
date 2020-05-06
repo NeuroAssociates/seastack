@@ -16,6 +16,7 @@ var Seastack;
         "valuelessHidden": "sea-valueless-hidden",
         "attributeName": "sea-att",
         "attributeValue": "sea-att-val",
+        "attributeValuelessHidden": "sea-attribute-valueless-hidden",
         "attributeSet": "sea-atts"
     };
     class SeaAttribute {
@@ -120,11 +121,18 @@ var Seastack;
                 this.seaAttributes = new Array();
                 let seaAttributeName = childElement.getAttribute(Seastack.tagNames.attributeName);
                 let seaAttributeValue = childElement.getAttribute(Seastack.tagNames.attributeValue);
+                let seaAttributeValuelessHidden = childElement.getAttribute(Seastack.tagNames.attributeValuelessHidden);
                 if (seaAttributeName !== null && seaAttributeName.length > 0
-                    && seaAttributeValue !== null && seaAttributeValue.length > 0
-                    && data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
-                    let seaAttribute = new SeaAttribute(seaAttributeName, seaAttributeValue);
-                    this.seaAttributes.push(seaAttribute);
+                    && seaAttributeValue !== null && seaAttributeValue.length > 0) {
+                    if (data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
+                        let seaAttribute = new SeaAttribute(seaAttributeName, seaAttributeValue);
+                        this.seaAttributes.push(seaAttribute);
+                    }
+                    else if (seaAttributeValuelessHidden !== null) {
+                        console.log(seaAttributeValuelessHidden);
+                        console.log(data[seaAttributeValue]);
+                        childElement.setAttribute("hidden", "");
+                    }
                 }
                 let seaAttributeSet = childElement.getAttribute(Seastack.tagNames.attributeSet);
                 if (seaAttributeSet !== null) {
@@ -144,7 +152,6 @@ var Seastack;
                 });
                 let seaValue = childElement.getAttribute(Seastack.tagNames.value);
                 let seaValuelessHidden = childElement.getAttribute(Seastack.tagNames.valuelessHidden);
-                // console.log(seaValuelessHidden);
                 if (seaValue === null || seaValue.length < 1) {
                     this.HTMLElementWithData(childElement, data);
                 }
@@ -153,7 +160,6 @@ var Seastack;
                 }
                 else if (seaValuelessHidden !== null) {
                     childElement.setAttribute("hidden", "");
-                    console.log(element);
                 }
                 element.appendChild(childElement);
             });
