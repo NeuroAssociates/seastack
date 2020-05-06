@@ -115,13 +115,13 @@ In case there is no corresponding value in data, the following attribute can be 
 If you want to make an element hidden when there is no data for a property other than a value, declare it as follows. (does not apply to multiple attributes)
 
 ```html
-<a sea-att="href" sea-att-val="link" sea-attribute-valueless-hidden>Link</a>
+<a sea-att="href" sea-att-val="link" sea-att-valueless-hidden>Link</a>
 ```
 
 Attribute | Value
 ------------ | -------------
 sea-valueless-hidden | Just declare the name without the value of the attribute.
-sea-attribute-valueless-hidden | Just declare the name without the value of the attribute.
+sea-att-valueless-hidden | Just declare the name without the value of the attribute.
 
 ## Apply
 
