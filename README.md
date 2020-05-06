@@ -47,22 +47,26 @@ You can freely specify data at a one-dimensional level in the form of an array i
         {
             "number": "+1",
             "name": "Canada",
-            "link" : "https://en.wikipedia.org/wiki/Canada"
+            "link" : "https://en.wikipedia.org/wiki/Canada",
+            "target": "_blank"
         },
         {
             "number": "+1",
             "name": "United States",
-            "link" : "https://en.wikipedia.org/wiki/United_States"
+            "link" : "https://en.wikipedia.org/wiki/United_States",
+            "target": "_blank"
         },
         {
             "number": "+20",
             "name": "Egypt",
-            "link" : "https://en.wikipedia.org/wiki/Egypt"
+            "link" : "https://en.wikipedia.org/wiki/Egypt",
+            "target": "_blank"
         },
         {
             "number": "+30",
             "name": "Greece",
-            "link" : "https://en.wikipedia.org/wiki/Greece"
+            "link" : "https://en.wikipedia.org/wiki/Greece",
+            "target": "_blank"
         }
     ]
 }
@@ -87,6 +91,31 @@ sea-att | attribute name
 sea-att-val | attribute value
 sea-val | value to replace inner HTML
 
+If you want to apply the definition of data to multiple attributes, write as follows.
+
+```html
+<div>
+    <span sea-val="number"></span>
+    <a sea-atts="href:link,target:target">
+        <span sea-val="name"></span>
+    </a>
+</div>
+```
+
+Attribute | Value
+------------ | -------------
+sea-atts | attribute sets like "name:value,name:value,..."
+
+In case there is no corresponding value in data, the following attribute can be added so that the hidden attribute is automatically added to the tag.
+
+```html
+<span sea-val="name" sea-valueless-hidden></span>
+```
+
+Attribute | Value
+------------ | -------------
+sea-valueless-hidden | Just declare the name without the value of the attribute.
+
 
 ## Apply
 
@@ -101,9 +130,22 @@ Attribute | Value
 sea-src | Path of HTML as component
 sea-data | Path of JSON data
 
+If you want to apply data using the contents of the tag without any separate html component, declare the source as "#" as follows:
+
+```html
+<div sea-src="#" sea-data="./data/data.json"></div>
+    <div>
+        <span sea-val="number"></span>
+        <a sea-att="href" sea-att-val="link">
+            <span sea-val="name"></span>
+        </a>
+    </div>
+</div>
+```
+
 ## Result
 
-If you apply as above, you will get the following result.
+If you apply as above, you will get the following result. (This is an example)
 
 ```html
 <div sea-src="./html/component.html" sea-data="./data/data.json">
@@ -133,34 +175,6 @@ If you apply as above, you will get the following result.
     </div>
 </div>
 ```
-
-## tags
-
-The attributes prefixed with sea mentioned above can be applied only to the following tags.
-
-* title
-* header
-* nav
-* footer
-* article
-* section
-* ul
-* li
-* h1
-* h2
-* div
-* span
-* p
-* svg
-* a
-* img
-* video
-* audio
-* iframe
-* ul
-* li
-
-
 
 # License
 

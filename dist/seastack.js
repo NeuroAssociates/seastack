@@ -13,33 +13,19 @@ var Seastack;
         "source": "sea-src",
         "dataPath": "sea-data",
         "value": "sea-val",
+        "valuelessHidden": "sea-valueless-hidden",
         "attributeName": "sea-att",
         "attributeValue": "sea-att-val",
-        "attributeMap": "sea-atts"
+        "attributeSet": "sea-atts"
     };
-    Seastack.entryElements = [
-        "TITLE",
-        "HEADER",
-        "NAV",
-        "FOOTER",
-        "ARTICLE",
-        "SECTION",
-        "UL",
-        "LI",
-        "H1",
-        "H2",
-        "DIV",
-        "SPAN",
-        "P",
-        "SVG",
-        "A",
-        "IMG",
-        "VIDEO",
-        "AUDIO",
-        "IFRAME",
-        "UL",
-        "LI"
-    ];
+    class SeaAttribute {
+        constructor(name, value) {
+            this.name = name;
+            this.value = value;
+            return;
+        }
+    }
+    Seastack.SeaAttribute = SeaAttribute;
     class SeaElement {
         constructor(targetElement) {
             if (!(targetElement instanceof Element))
@@ -94,6 +80,7 @@ var Seastack;
             return new Promise((resolve) => {
                 if (this.isValid() === false)
                     return this;
+                // console.log(this);
                 if (this.seaSource === "#") {
                     let html = this.element.innerHTML;
                     this.element.innerHTML = this.HTMLwithData(html);
@@ -108,7 +95,7 @@ var Seastack;
                     return response.text();
                 })
                     .then((html) => {
-                    this.element.innerHTML = this.HTMLwithData(html);
+                    this.element.innerHTML = this.element.innerHTML + this.HTMLwithData(html);
                     return resolve(this);
                 })
                     .catch(function (err) {
@@ -125,34 +112,59 @@ var Seastack;
             this.seaData.forEach(data => {
                 let itemElement = document.createElement("seaData");
                 itemElement.innerHTML = html;
-                Seastack.entryElements.forEach(entryElement => {
-                    let targetElements = [...itemElement.getElementsByTagName(entryElement)];
-                    targetElements.forEach(element => {
-                        var isValueless = true;
-                        let seaAttributeName = element.getAttribute(Seastack.tagNames.attributeName);
-                        let seaAttributeValue = element.getAttribute(Seastack.tagNames.attributeValue);
-                        if (seaAttributeName !== null && seaAttributeName.length > 0
-                            && seaAttributeValue !== null && seaAttributeValue.length > 0
-                            && data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
-                            element.setAttribute(seaAttributeName, data[seaAttributeValue]);
-                            isValueless = false;
-                        }
-                        let seaValue = element.getAttribute(Seastack.tagNames.value);
-                        if (seaValue !== null && seaValue.length > 0
-                            && data[seaValue] !== undefined && data[seaValue].length > 0) {
-                            element.innerHTML = data[seaValue];
-                            isValueless = false;
-                        }
-                        let seaValuelessHidden = element.getAttribute("sea-valueless-hidden");
-                        if (seaValuelessHidden !== null && seaValuelessHidden.length > 0
-                            && isValueless === true) {
-                            element.setAttribute("hidden", "");
-                        }
-                    });
-                });
-                rootElement.innerHTML = rootElement.innerHTML + itemElement.innerHTML;
+                rootElement.innerHTML = rootElement.innerHTML + this.HTMLElementWithData(itemElement, data).innerHTML;
             });
             return rootElement.innerHTML;
+        }
+        HTMLElementWithData(element, data) {
+            [...element.children].forEach(childElement => {
+                this.seaAttributes = new Array();
+                let seaAttributeName = childElement.getAttribute(Seastack.tagNames.attributeName);
+                let seaAttributeValue = childElement.getAttribute(Seastack.tagNames.attributeValue);
+                if (seaAttributeName !== null && seaAttributeName.length > 0
+                    && seaAttributeValue !== null && seaAttributeValue.length > 0
+                    && data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
+                    let seaAttribute = new SeaAttribute(seaAttributeName, seaAttributeValue);
+                    this.seaAttributes.push(seaAttribute);
+                    // childElement.setAttribute(seaAttributeName, data[seaAttributeValue]);
+                    // isValueless = false;
+                    // console.log(seaAttributeName);
+                    // console.log(seaAttributeValue);
+                }
+                let seaAttributeSet = childElement.getAttribute(Seastack.tagNames.attributeSet);
+                if (seaAttributeSet !== null) {
+                    let attributes = seaAttributeSet.split(",");
+                    attributes.forEach(attribute => {
+                        let items = attribute.split(":");
+                        if (items.length > 1) {
+                            let name = items[0].trim();
+                            let value = items[1].trim();
+                            let seaAttribute = new SeaAttribute(name, value);
+                            this.seaAttributes.push(seaAttribute);
+                        }
+                    });
+                }
+                // console.log(this.seaAttributes);
+                this.seaAttributes.forEach(attribute => {
+                    // console.log(attribute);
+                    childElement.setAttribute(attribute.name, data[attribute.value]);
+                });
+                let seaValue = childElement.getAttribute(Seastack.tagNames.value);
+                let seaValuelessHidden = childElement.getAttribute(Seastack.tagNames.valuelessHidden);
+                // console.log(seaValuelessHidden);
+                if (seaValue === null || seaValue.length < 1) {
+                    this.HTMLElementWithData(childElement, data);
+                }
+                else if (data[seaValue] !== undefined && data[seaValue].length > 0) {
+                    childElement.innerHTML = data[seaValue];
+                }
+                else if (seaValuelessHidden !== null) { //} && seaValuelessHidden.toUpperCase() === "TRUE") {
+                    childElement.setAttribute("hidden", "");
+                    console.log(element);
+                }
+                element.appendChild(childElement);
+            });
+            return element;
         }
     }
     Seastack.SeaElement = SeaElement;
