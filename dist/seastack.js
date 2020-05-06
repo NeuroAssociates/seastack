@@ -35,7 +35,7 @@ var Seastack;
             if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
                 this.element = targetElement;
                 this.seaSource = seaSource;
-                this.seaDataPath = seaDataPath; // none => null
+                this.seaDataPath = seaDataPath;
             }
             return this;
         }
@@ -80,7 +80,6 @@ var Seastack;
             return new Promise((resolve) => {
                 if (this.isValid() === false)
                     return this;
-                // console.log(this);
                 if (this.seaSource === "#") {
                     let html = this.element.innerHTML;
                     this.element.innerHTML = this.HTMLwithData(html);
@@ -126,10 +125,6 @@ var Seastack;
                     && data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
                     let seaAttribute = new SeaAttribute(seaAttributeName, seaAttributeValue);
                     this.seaAttributes.push(seaAttribute);
-                    // childElement.setAttribute(seaAttributeName, data[seaAttributeValue]);
-                    // isValueless = false;
-                    // console.log(seaAttributeName);
-                    // console.log(seaAttributeValue);
                 }
                 let seaAttributeSet = childElement.getAttribute(Seastack.tagNames.attributeSet);
                 if (seaAttributeSet !== null) {
@@ -144,9 +139,7 @@ var Seastack;
                         }
                     });
                 }
-                // console.log(this.seaAttributes);
                 this.seaAttributes.forEach(attribute => {
-                    // console.log(attribute);
                     childElement.setAttribute(attribute.name, data[attribute.value]);
                 });
                 let seaValue = childElement.getAttribute(Seastack.tagNames.value);
@@ -158,7 +151,7 @@ var Seastack;
                 else if (data[seaValue] !== undefined && data[seaValue].length > 0) {
                     childElement.innerHTML = data[seaValue];
                 }
-                else if (seaValuelessHidden !== null) { //} && seaValuelessHidden.toUpperCase() === "TRUE") {
+                else if (seaValuelessHidden !== null) {
                     childElement.setAttribute("hidden", "");
                     console.log(element);
                 }
