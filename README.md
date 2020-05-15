@@ -1,3 +1,8 @@
+[![GitHub issues](https://img.shields.io/github/issues/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/issues)
+[![GitHub forks](https://img.shields.io/github/forks/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/network)
+[![GitHub stars](https://img.shields.io/github/stars/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/stargazers)
+[![GitHub license](https://img.shields.io/github/license/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/blob/master/LICENSE)
+
 ![Logo of Seastack](./img/logo.png)
 
 # Seastack.js
