@@ -144,7 +144,7 @@ sea-data | Path of JSON data
 If you want to apply data using the contents of the tag without any separate html component, declare the source as "#" as follows:
 
 ```html
-<div sea-src="#" sea-data="./data/data.json"></div>
+<div sea-src="#" sea-data="./data/data.json">
     <div>
         <span sea-val="number"></span>
         <a sea-att="href" sea-att-val="link">

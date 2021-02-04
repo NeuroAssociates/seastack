@@ -1,6 +1,6 @@
 {
   "name": "seastack",
-  "version": "0.8.9",
+  "version": "0.9.0",
   "description": "A JavaScript library for generating web documents based on data.",
   "main": "dist/seastack.js",
   "types": "dist/seastack.d.ts",
@@ -20,5 +20,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist/*"
+  ],
   "keywords": []
 }
