@@ -1,6 +1,12 @@
 // import { Seastack } from "./seastack";
 
-document.addEventListener('DOMContentLoaded', () => {
-    let seastack = new Seastack.Core();
-    seastack.getElements(document.body).fillElements();
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const seastack = new Seastack.Core();
+        seastack.getElements(document.body);
+        await seastack.fillElements();
+    }
+    catch (err) {
+        console.error('Seastack initialization error:', err);
+    }
 }, false);

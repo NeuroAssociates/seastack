@@ -1,20 +1,22 @@
 {
     "compilerOptions": {
-        "module": "amd",
-        "target": "es6",
-        "noImplicitAny": true,
+        "target": "ES2020",
+        "module": "ES2020",
+        "lib": ["ES2020", "DOM"],
+        "rootDir": "./src",
+        "outDir": "./dist",
         "sourceMap": true,
-        
-        // "strict": true,
-        
-        /* 
-        You need to add the "declaration: true" flag. 
-        This will generate the typings required for the consumers to use this library. 
-        */
-        "declaration": true,
-        "outDir": "./dist"
+        "inlineSources": true,
+
+        "strict": true,
+        "noImplicitAny": true,
+
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src/**/*"],
+    "exclude": ["dist"]
 }

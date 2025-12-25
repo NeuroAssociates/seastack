@@ -1,3 +1,4 @@
+[![Version](https://img.shields.io/badge/version-1.0-blue)]
 [![GitHub issues](https://img.shields.io/github/issues/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/issues)
 [![GitHub forks](https://img.shields.io/github/forks/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/network)
 [![GitHub stars](https://img.shields.io/github/stars/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/stargazers)
@@ -10,6 +11,11 @@
 
 The final goal of the project is to quickly generate web documents by associating HTML code with JSON-formatted data files without additional JavaScript coding. Using this library, you can conveniently update the website without updating the HTML code by simply updating the JSON file.
 
+# How to build?
+
+```
+tsc --project tsconfig.json
+```
 
 # How to use?
 

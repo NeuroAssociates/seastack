@@ -1,12 +1,4 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+"use strict";
 var Seastack;
 (function (Seastack) {
     Seastack.tagNames = {
@@ -29,139 +21,132 @@ var Seastack;
     Seastack.SeaAttribute = SeaAttribute;
     class SeaElement {
         constructor(targetElement) {
+            this.seaSource = null;
+            this.seaDataPath = null;
+            this.seaAttributes = [];
             if (!(targetElement instanceof Element))
-                return null;
-            let seaSource = targetElement.getAttribute(Seastack.tagNames.source);
-            let seaDataPath = targetElement.getAttribute(Seastack.tagNames.dataPath);
-            if (seaSource !== null && seaSource !== undefined && seaSource.length > 0) {
-                this.element = targetElement;
-                this.seaSource = seaSource;
-                this.seaDataPath = seaDataPath;
-            }
-            return this;
+                throw new Error('SeaElement requires an Element');
+            this.element = targetElement;
+            this.seaSource = targetElement.getAttribute(Seastack.tagNames.source);
+            this.seaDataPath = targetElement.getAttribute(Seastack.tagNames.dataPath);
+            this.seaAttributes = [];
         }
         isValid() {
             return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
         }
-        fill() {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (this.isValid() === false)
-                    return;
-                yield this.getData();
-                yield this.fillHTML();
-                return;
-            });
+        async fill() {
+            if (!this.isValid())
+                return this;
+            await this.getData();
+            await this.fillHTML();
+            return this;
         }
-        getData() {
-            return new Promise((resolve) => {
-                if (this.isValid() === false || this.seaDataPath === null) {
-                    return resolve(this);
-                }
-                fetch(this.seaDataPath, { mode: 'cors' })
-                    .then((response) => {
-                    if (response.status !== 200) {
-                        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
-                        return;
-                    }
-                    return response.json();
-                })
-                    .then((json) => {
-                    if (json.seadata !== null) {
-                        this.seaData = json.seadata;
-                    }
-                    return resolve(this);
-                })
-                    .catch(function (err) {
-                    console.log('Fetch Error: ' + err);
-                    return resolve(this);
-                });
-            });
-        }
-        fillHTML() {
-            return new Promise((resolve) => {
-                if (this.isValid() === false)
+        async getData() {
+            if (!this.isValid() || !this.seaDataPath)
+                return this;
+            try {
+                const response = await fetch(this.seaDataPath, { mode: 'cors' });
+                if (!response.ok) {
+                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
                     return this;
-                if (this.seaSource === "#") {
-                    let html = this.element.innerHTML;
-                    this.element.innerHTML = this.HTMLwithData(html);
-                    return resolve(this);
                 }
-                fetch(this.seaSource, { mode: 'cors' })
-                    .then((response) => {
-                    if (response.status !== 200) {
-                        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
-                        return;
-                    }
-                    return response.text();
-                })
-                    .then((html) => {
-                    this.element.innerHTML = this.element.innerHTML + this.HTMLwithData(html);
-                    return resolve(this);
-                })
-                    .catch(function (err) {
-                    console.log('Fetch Error:' + err);
-                    return resolve(this);
-                });
-            });
+                const json = await response.json();
+                this.seaData = (json && (json.seadata ?? json.seaData ?? json.data)) || [];
+                return this;
+            }
+            catch (err) {
+                console.log('Fetch Error: ' + err);
+                return this;
+            }
+        }
+        async fillHTML() {
+            if (!this.isValid())
+                return this;
+            if (this.seaSource === "#") {
+                const html = this.element.innerHTML;
+                this.element.innerHTML = this.HTMLwithData(html);
+                return this;
+            }
+            if (!this.seaSource)
+                return this;
+            try {
+                const response = await fetch(this.seaSource, { mode: 'cors' });
+                if (!response.ok) {
+                    console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
+                    return this;
+                }
+                const html = await response.text();
+                this.element.innerHTML = this.element.innerHTML + this.HTMLwithData(html);
+                return this;
+            }
+            catch (err) {
+                console.log('Fetch Error:' + err);
+                return this;
+            }
         }
         HTMLwithData(html) {
-            if (this.seaData === undefined) {
+            if (!this.seaData || this.seaData.length === 0)
                 return html;
-            }
-            let rootElement = document.createElement("seaDataSet");
-            this.seaData.forEach(data => {
-                let itemElement = document.createElement("seaData");
-                itemElement.innerHTML = html;
-                rootElement.innerHTML = rootElement.innerHTML + this.HTMLElementWithData(itemElement, data).innerHTML;
-            });
-            return rootElement.innerHTML;
-        }
-        HTMLElementWithData(element, data) {
-            [...element.children].forEach(childElement => {
-                this.seaAttributes = new Array();
-                let seaAttributeName = childElement.getAttribute(Seastack.tagNames.attributeName);
-                let seaAttributeValue = childElement.getAttribute(Seastack.tagNames.attributeValue);
-                let seaAttributeValuelessHidden = childElement.getAttribute(Seastack.tagNames.attributeValuelessHidden);
-                if (seaAttributeName !== null && seaAttributeName.length > 0
-                    && seaAttributeValue !== null && seaAttributeValue.length > 0) {
-                    if (data[seaAttributeValue] !== null && data[seaAttributeValue].length > 0) {
-                        let seaAttribute = new SeaAttribute(seaAttributeName, seaAttributeValue);
-                        this.seaAttributes.push(seaAttribute);
-                    }
-                    else if (seaAttributeValuelessHidden !== null) {
-                        childElement.setAttribute("hidden", "");
-                    }
-                }
-                let seaAttributeSet = childElement.getAttribute(Seastack.tagNames.attributeSet);
-                if (seaAttributeSet !== null) {
-                    let attributes = seaAttributeSet.split(",");
-                    attributes.forEach(attribute => {
-                        let items = attribute.split(":");
-                        if (items.length > 1) {
-                            let name = items[0].trim();
-                            let value = items[1].trim();
-                            let seaAttribute = new SeaAttribute(name, value);
-                            this.seaAttributes.push(seaAttribute);
-                        }
-                    });
-                }
-                this.seaAttributes.forEach(attribute => {
-                    childElement.setAttribute(attribute.name, data[attribute.value]);
+            const root = document.createElement('div');
+            // create a temporary container for the template HTML
+            const templateContainer = document.createElement('div');
+            templateContainer.innerHTML = html;
+            this.seaData.forEach(dataItem => {
+                // clone each top-level node from the template container
+                Array.from(templateContainer.children).forEach(node => {
+                    const clone = node.cloneNode(true);
+                    this.applyDataToElement(clone, dataItem);
+                    root.appendChild(clone);
                 });
-                let seaValue = childElement.getAttribute(Seastack.tagNames.value);
-                let seaValuelessHidden = childElement.getAttribute(Seastack.tagNames.valuelessHidden);
-                if (seaValue === null || seaValue.length < 1) {
-                    this.HTMLElementWithData(childElement, data);
-                }
-                else if (data[seaValue] !== undefined && data[seaValue].length > 0) {
-                    childElement.innerHTML = data[seaValue];
-                }
-                else if (seaValuelessHidden !== null) {
-                    childElement.setAttribute("hidden", "");
-                }
-                element.appendChild(childElement);
             });
-            return element;
+            return root.innerHTML;
+        }
+        // Walk node tree and apply attribute/value bindings for a single data item
+        applyDataToElement(el, data) {
+            // process this element
+            const attrs = [];
+            const seaAttributeName = el.getAttribute(Seastack.tagNames.attributeName);
+            const seaAttributeValue = el.getAttribute(Seastack.tagNames.attributeValue);
+            const seaAttributeValuelessHidden = el.getAttribute(Seastack.tagNames.attributeValuelessHidden);
+            if (seaAttributeName && seaAttributeName.length > 0 && seaAttributeValue && seaAttributeValue.length > 0) {
+                const val = data[seaAttributeValue];
+                if (val != null && String(val).length > 0) {
+                    attrs.push(new SeaAttribute(seaAttributeName, seaAttributeValue));
+                }
+                else if (seaAttributeValuelessHidden != null) {
+                    el.setAttribute('hidden', '');
+                }
+            }
+            const seaAttributeSet = el.getAttribute(Seastack.tagNames.attributeSet);
+            if (seaAttributeSet) {
+                const attributes = seaAttributeSet.split(',');
+                attributes.forEach(attribute => {
+                    const items = attribute.split(':');
+                    if (items.length > 1) {
+                        const name = items[0].trim();
+                        const value = items[1].trim();
+                        attrs.push(new SeaAttribute(name, value));
+                    }
+                });
+            }
+            attrs.forEach(attribute => {
+                const value = data[attribute.value];
+                if (value != null)
+                    el.setAttribute(attribute.name, String(value));
+            });
+            const seaValue = el.getAttribute(Seastack.tagNames.value);
+            const seaValuelessHidden = el.getAttribute(Seastack.tagNames.valuelessHidden);
+            if (seaValue && seaValue.length > 0) {
+                const v = data[seaValue];
+                if (v != null && String(v).length > 0) {
+                    el.innerHTML = String(v);
+                }
+                else if (seaValuelessHidden != null) {
+                    el.setAttribute('hidden', '');
+                }
+            }
+            // recurse into children
+            Array.from(el.children).forEach(child => this.applyDataToElement(child, data));
         }
     }
     Seastack.SeaElement = SeaElement;
@@ -177,7 +162,7 @@ var Seastack;
         getElementsFromChildren(rootElement) {
             if (!(rootElement instanceof Element))
                 return;
-            [...rootElement.children].forEach(childElement => {
+            Array.from(rootElement.children).forEach(childElement => {
                 var seaElement = new SeaElement(childElement);
                 if (seaElement.isValid() === true) {
                     this.seaElements.push(seaElement);
@@ -188,10 +173,12 @@ var Seastack;
             });
             return;
         }
-        fillElements() {
-            this.seaElements.forEach(element => {
-                element.fill();
-            });
+        // fillElements now awaits each element.fill() to ensure data/template
+        // processing completes before returning.
+        async fillElements() {
+            for (const element of this.seaElements) {
+                await element.fill();
+            }
             return this;
         }
     }
