@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/badge/version-1.0-blue)]
+[![GitHub version](https://img.shields.io/badge/version-1.0-blue)](https://github.com/NeuroAssociates/seastack/releases/tag/Release)
 [![GitHub issues](https://img.shields.io/github/issues/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/issues)
 [![GitHub forks](https://img.shields.io/github/forks/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/network)
 [![GitHub stars](https://img.shields.io/github/stars/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/stargazers)
@@ -196,5 +196,6 @@ If you apply as above, you will get the following result. (This is an example)
 # License
 
 Copyright (c) Neuro Associates. All rights reserved.
+
 
 Licensed under the [MIT](LICENSE.txt) License.
