@@ -1,4 +1,4 @@
-import { SeaAttribute } from "./SeaAttribute";
+import { SeaAttribute } from './SeaAttribute';
 export declare class SeaElement {
     element: Element;
     seaSource: string | null;

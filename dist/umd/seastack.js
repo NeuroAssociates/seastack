@@ -5,14 +5,14 @@
 })(this, (function (exports) { 'use strict';
 
     const tagNames = {
-        "source": "sea-src",
-        "dataPath": "sea-data",
-        "value": "sea-val",
-        "valuelessHidden": "sea-valueless-hidden",
-        "attributeName": "sea-att",
-        "attributeValue": "sea-att-val",
-        "attributeValuelessHidden": "sea-att-valueless-hidden",
-        "attributeSet": "sea-atts"
+        source: 'sea-src',
+        dataPath: 'sea-data',
+        value: 'sea-val',
+        valuelessHidden: 'sea-valueless-hidden',
+        attributeName: 'sea-att',
+        attributeValue: 'sea-att-val',
+        attributeValuelessHidden: 'sea-att-valueless-hidden',
+        attributeSet: 'sea-atts',
     };
 
     class SeaAttribute {
@@ -35,7 +35,7 @@
             this.seaAttributes = [];
         }
         isValid() {
-            return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
+            return this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0;
         }
         async fill() {
             if (!this.isValid())
@@ -65,9 +65,9 @@
         async fillHTML() {
             if (!this.isValid())
                 return this;
-            if (this.seaSource === "#") {
+            if (this.seaSource === '#') {
                 const html = this.element.innerHTML;
-                this.element.innerHTML = ""; // Clear template nodes safely
+                this.element.innerHTML = ''; // Clear template nodes safely
                 const fragment = this.HTMLwithDataFragment(html);
                 this.element.appendChild(fragment);
                 return this;
@@ -102,8 +102,8 @@
             }
             const templateContainer = document.createElement('div');
             templateContainer.innerHTML = html;
-            this.seaData.forEach(dataItem => {
-                Array.from(templateContainer.children).forEach(node => {
+            this.seaData.forEach((dataItem) => {
+                Array.from(templateContainer.children).forEach((node) => {
                     const clone = node.cloneNode(true);
                     this.applyDataToElement(clone, dataItem);
                     fragment.appendChild(clone);
@@ -118,7 +118,10 @@
             const seaAttributeName = el.getAttribute(tagNames.attributeName);
             const seaAttributeValue = el.getAttribute(tagNames.attributeValue);
             const seaAttributeValuelessHidden = el.getAttribute(tagNames.attributeValuelessHidden);
-            if (seaAttributeName && seaAttributeName.length > 0 && seaAttributeValue && seaAttributeValue.length > 0) {
+            if (seaAttributeName &&
+                seaAttributeName.length > 0 &&
+                seaAttributeValue &&
+                seaAttributeValue.length > 0) {
                 const val = data[seaAttributeValue];
                 if (val != null && String(val).length > 0) {
                     attrs.push(new SeaAttribute(seaAttributeName, seaAttributeValue));
@@ -130,7 +133,7 @@
             const seaAttributeSet = el.getAttribute(tagNames.attributeSet);
             if (seaAttributeSet) {
                 const attributes = seaAttributeSet.split(',');
-                attributes.forEach(attribute => {
+                attributes.forEach((attribute) => {
                     const items = attribute.split(':');
                     if (items.length > 1) {
                         const name = items[0].trim();
@@ -139,7 +142,7 @@
                     }
                 });
             }
-            attrs.forEach(attribute => {
+            attrs.forEach((attribute) => {
                 const value = data[attribute.value];
                 if (value != null)
                     el.setAttribute(attribute.name, String(value));
@@ -156,24 +159,24 @@
                 }
             }
             // recurse into children
-            Array.from(el.children).forEach(child => this.applyDataToElement(child, data));
+            Array.from(el.children).forEach((child) => this.applyDataToElement(child, data));
         }
     }
 
     class Core {
         constructor() {
-            this.seaElements = new Array();
+            this.seaElements = [];
         }
         getElements(rootElement) {
-            this.seaElements = new Array();
+            this.seaElements = [];
             this.getElementsFromChildren(rootElement);
             return this;
         }
         getElementsFromChildren(rootElement) {
             if (!(rootElement instanceof Element))
                 return;
-            Array.from(rootElement.children).forEach(childElement => {
-                var seaElement = new SeaElement(childElement);
+            Array.from(rootElement.children).forEach((childElement) => {
+                const seaElement = new SeaElement(childElement);
                 if (seaElement.isValid() === true) {
                     this.seaElements.push(seaElement);
                 }
@@ -214,7 +217,7 @@
             if (!src)
                 return;
             // Clear existing rendering for proper reactivity
-            this.innerHTML = "";
+            this.innerHTML = '';
             const seaElement = new SeaElement(this);
             seaElement.seaSource = src;
             seaElement.seaDataPath = data;

@@ -1,12 +1,15 @@
-import { Core } from "./core/Core";
+import { Core } from './core/Core';
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener(
+  'DOMContentLoaded',
+  async () => {
     try {
-        const seastack = new Core();
-        seastack.getElements(document.body);
-        await seastack.fillElements();
+      const seastack = new Core();
+      seastack.getElements(document.body);
+      await seastack.fillElements();
+    } catch (err) {
+      console.error('Seastack initialization error:', err);
     }
-    catch (err) {
-        console.error('Seastack initialization error:', err);
-    }
-}, false);
+  },
+  false,
+);

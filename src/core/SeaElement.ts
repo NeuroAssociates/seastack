@@ -1,160 +1,161 @@
-import { tagNames } from "../constants/tagNames";
-import { SeaAttribute } from "./SeaAttribute";
+import { tagNames } from '../constants/tagNames';
+import { SeaAttribute } from './SeaAttribute';
 
 export class SeaElement {
-    element!: Element;
-    seaSource: string | null = null;
-    seaDataPath: string | null = null;
-    seaData?: Array<any>;
-    seaAttributes: Array<SeaAttribute> = [];
+  element!: Element;
+  seaSource: string | null = null;
+  seaDataPath: string | null = null;
+  seaData?: Array<any>;
+  seaAttributes: Array<SeaAttribute> = [];
 
-    constructor(targetElement: Element) {
-        if (!(targetElement instanceof Element)) throw new Error('SeaElement requires an Element');
+  constructor(targetElement: Element) {
+    if (!(targetElement instanceof Element)) throw new Error('SeaElement requires an Element');
 
-        this.element = targetElement;
-        this.seaSource = targetElement.getAttribute(tagNames.source);
-        this.seaDataPath = targetElement.getAttribute(tagNames.dataPath);
-        this.seaAttributes = [];
-    }
+    this.element = targetElement;
+    this.seaSource = targetElement.getAttribute(tagNames.source);
+    this.seaDataPath = targetElement.getAttribute(tagNames.dataPath);
+    this.seaAttributes = [];
+  }
 
-    isValid(): boolean {
-        return (this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0);
-    }
-    
-    async fill() {
-        if (!this.isValid()) return this;
-        await this.getData();
-        await this.fillHTML();
+  isValid(): boolean {
+    return this.seaSource !== null && this.seaSource !== undefined && this.seaSource.length > 0;
+  }
+
+  async fill() {
+    if (!this.isValid()) return this;
+    await this.getData();
+    await this.fillHTML();
+    return this;
+  }
+
+  async getData(): Promise<SeaElement> {
+    if (!this.isValid() || !this.seaDataPath) return this;
+
+    try {
+      const response = await fetch(this.seaDataPath, { mode: 'cors' });
+      if (!response.ok) {
+        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
         return this;
+      }
+
+      const json = await response.json();
+      this.seaData = (json && (json.seadata ?? json.seaData ?? json.data)) || [];
+      return this;
+    } catch (err) {
+      console.log('Fetch Error: ' + err);
+      return this;
+    }
+  }
+
+  async fillHTML(): Promise<SeaElement> {
+    if (!this.isValid()) return this;
+
+    if (this.seaSource === '#') {
+      const html = this.element.innerHTML;
+      this.element.innerHTML = ''; // Clear template nodes safely
+      const fragment = this.HTMLwithDataFragment(html);
+      this.element.appendChild(fragment);
+      return this;
     }
 
-    async getData(): Promise<SeaElement> {
-        if (!this.isValid() || !this.seaDataPath) return this;
+    if (!this.seaSource) return this;
 
-        try {
-            const response = await fetch(this.seaDataPath, { mode: 'cors' });
-            if (!response.ok) {
-                console.log('Status Code: ' + response.status + ' while fetching ' + this.seaDataPath);
-                return this;
-            }
+    try {
+      const response = await fetch(this.seaSource, { mode: 'cors' });
+      if (!response.ok) {
+        console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
+        return this;
+      }
 
-            const json = await response.json();
-            this.seaData = (json && (json.seadata ?? json.seaData ?? json.data)) || [];
-            return this;
-        }
-        catch (err) {
-            console.log('Fetch Error: ' + err);
-            return this;
-        }
+      const html = await response.text();
+      const fragment = this.HTMLwithDataFragment(html);
+      this.element.appendChild(fragment);
+      return this;
+    } catch (err) {
+      console.log('Fetch Error:' + err);
+      return this;
+    }
+  }
+
+  HTMLwithDataFragment(html: string): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    if (!this.seaData || this.seaData.length === 0) {
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+      while (temp.firstChild) {
+        fragment.appendChild(temp.firstChild);
+      }
+      return fragment;
     }
 
-    async fillHTML(): Promise<SeaElement> {
-        if (!this.isValid()) return this;
+    const templateContainer = document.createElement('div');
+    templateContainer.innerHTML = html;
 
-        if (this.seaSource === "#") {
-            const html = this.element.innerHTML;
-            this.element.innerHTML = ""; // Clear template nodes safely
-            const fragment = this.HTMLwithDataFragment(html);
-            this.element.appendChild(fragment);
-            return this;
-        }
+    this.seaData.forEach((dataItem) => {
+      Array.from(templateContainer.children).forEach((node) => {
+        const clone = node.cloneNode(true) as Element;
+        this.applyDataToElement(clone, dataItem);
+        fragment.appendChild(clone);
+      });
+    });
 
-        if (!this.seaSource) return this;
+    return fragment;
+  }
 
-        try {
-            const response = await fetch(this.seaSource, { mode: 'cors' });
-            if (!response.ok) {
-                console.log('Status Code: ' + response.status + ' while fetching ' + this.seaSource);
-                return this;
-            }
+  // Walk node tree and apply attribute/value bindings for a single data item
+  applyDataToElement(el: Element, data: any): void {
+    // process this element
+    const attrs: Array<SeaAttribute> = [];
 
-            const html = await response.text();
-            const fragment = this.HTMLwithDataFragment(html);
-            this.element.appendChild(fragment);
-            return this;
-        }
-        catch (err) {
-            console.log('Fetch Error:' + err);
-            return this;
-        }
+    const seaAttributeName = el.getAttribute(tagNames.attributeName);
+    const seaAttributeValue = el.getAttribute(tagNames.attributeValue);
+    const seaAttributeValuelessHidden = el.getAttribute(tagNames.attributeValuelessHidden);
+
+    if (
+      seaAttributeName &&
+      seaAttributeName.length > 0 &&
+      seaAttributeValue &&
+      seaAttributeValue.length > 0
+    ) {
+      const val = data[seaAttributeValue];
+      if (val != null && String(val).length > 0) {
+        attrs.push(new SeaAttribute(seaAttributeName, seaAttributeValue));
+      } else if (seaAttributeValuelessHidden != null) {
+        el.setAttribute('hidden', '');
+      }
     }
 
-    HTMLwithDataFragment(html: string): DocumentFragment {
-        const fragment = document.createDocumentFragment();
-        if (!this.seaData || this.seaData.length === 0) {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            while (temp.firstChild) {
-                fragment.appendChild(temp.firstChild);
-            }
-            return fragment;
+    const seaAttributeSet = el.getAttribute(tagNames.attributeSet);
+    if (seaAttributeSet) {
+      const attributes = seaAttributeSet.split(',');
+      attributes.forEach((attribute) => {
+        const items = attribute.split(':');
+        if (items.length > 1) {
+          const name = items[0].trim();
+          const value = items[1].trim();
+          attrs.push(new SeaAttribute(name, value));
         }
-
-        const templateContainer = document.createElement('div');
-        templateContainer.innerHTML = html;
-
-        this.seaData.forEach(dataItem => {
-            Array.from(templateContainer.children).forEach(node => {
-                const clone = node.cloneNode(true) as Element;
-                this.applyDataToElement(clone, dataItem);
-                fragment.appendChild(clone);
-            });
-        });
-
-        return fragment;
+      });
     }
 
-    // Walk node tree and apply attribute/value bindings for a single data item
-    applyDataToElement(el: Element, data: any): void {
-        // process this element
-        const attrs: Array<SeaAttribute> = [];
+    attrs.forEach((attribute) => {
+      const value = data[attribute.value];
+      if (value != null) el.setAttribute(attribute.name, String(value));
+    });
 
-        const seaAttributeName = el.getAttribute(tagNames.attributeName);
-        const seaAttributeValue = el.getAttribute(tagNames.attributeValue);
-        const seaAttributeValuelessHidden = el.getAttribute(tagNames.attributeValuelessHidden);
+    const seaValue = el.getAttribute(tagNames.value);
+    const seaValuelessHidden = el.getAttribute(tagNames.valuelessHidden);
 
-        if (seaAttributeName && seaAttributeName.length > 0 && seaAttributeValue && seaAttributeValue.length > 0) {
-            const val = data[seaAttributeValue];
-            if (val != null && String(val).length > 0) {
-                attrs.push(new SeaAttribute(seaAttributeName, seaAttributeValue));
-            }
-            else if (seaAttributeValuelessHidden != null) {
-                el.setAttribute('hidden', '');
-            }
-        }
-
-        const seaAttributeSet = el.getAttribute(tagNames.attributeSet);
-        if (seaAttributeSet) {
-            const attributes = seaAttributeSet.split(',');
-            attributes.forEach(attribute => {
-                const items = attribute.split(':');
-                if (items.length > 1) {
-                    const name = items[0].trim();
-                    const value = items[1].trim();
-                    attrs.push(new SeaAttribute(name, value));
-                }
-            });
-        }
-
-        attrs.forEach(attribute => {
-            const value = data[attribute.value];
-            if (value != null) el.setAttribute(attribute.name, String(value));
-        });
-
-        const seaValue = el.getAttribute(tagNames.value);
-        const seaValuelessHidden = el.getAttribute(tagNames.valuelessHidden);
-
-        if (seaValue && seaValue.length > 0) {
-            const v = data[seaValue];
-            if (v != null && String(v).length > 0) {
-                el.innerHTML = String(v);
-            }
-            else if (seaValuelessHidden != null) {
-                el.setAttribute('hidden', '');
-            }
-        }
-
-        // recurse into children
-        Array.from(el.children).forEach(child => this.applyDataToElement(child as Element, data));
+    if (seaValue && seaValue.length > 0) {
+      const v = data[seaValue];
+      if (v != null && String(v).length > 0) {
+        el.innerHTML = String(v);
+      } else if (seaValuelessHidden != null) {
+        el.setAttribute('hidden', '');
+      }
     }
+
+    // recurse into children
+    Array.from(el.children).forEach((child) => this.applyDataToElement(child as Element, data));
+  }
 }

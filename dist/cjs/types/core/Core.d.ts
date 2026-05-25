@@ -1,4 +1,4 @@
-import { SeaElement } from "./SeaElement";
+import { SeaElement } from './SeaElement';
 export declare class Core {
     seaElements: Array<SeaElement>;
     constructor();

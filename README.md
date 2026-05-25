@@ -1,59 +1,65 @@
-[![GitHub version](https://img.shields.io/badge/version-2.0-blue)](https://github.com/NeuroAssociates/seastack/releases/tag/Release)
+[![GitHub version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/NeuroAssociates/seastack/releases/tag/Release)
 [![GitHub issues](https://img.shields.io/github/issues/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/issues)
 [![GitHub forks](https://img.shields.io/github/forks/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/network)
 [![GitHub stars](https://img.shields.io/github/stars/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/stargazers)
 [![GitHub license](https://img.shields.io/github/license/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/blob/master/LICENSE)
+*Read this in other languages: [English](README.md), [한국어](README.ko.md)*
 
 ![Logo of Seastack](./img/logo.png)
 
-# Seastack.js
-*A JavaScript library for generating web documents based on data*
+# Seastack.js v2.0.0
+*A high-performance, zero-dependency JavaScript library for generating web documents based on data*
 
-The final goal of the project is to quickly generate web documents by associating HTML code with JSON-formatted data files without additional JavaScript coding. Using this library, you can conveniently update the website without updating the HTML code by simply updating the JSON file.
+Seastack.js enables you to quickly generate web documents by associating HTML templates with JSON-formatted data files without additional JavaScript coding. With this library, you can update your website simply by modifying the JSON file—no HTML updates required.
 
-# How to build?
+---
 
-First, install the development dependencies:
+## 🚀 Key Features
 
-```bash
-npm install
-```
+*   **Standard Web Components Support:** Declare custom `<sea-stack>` tags to dynamically bind templates and data.
+*   **High-Performance DOM Rendering:** Leverages `DocumentFragment` to aggregate DOM nodes offscreen, eliminating layout reflows and reducing CPU overhead.
+*   **Universal Module Support (ESM, CJS, UMD):** Seamlessly integrates with modern bundlers (Webpack, Vite, Rollup) and traditional `<script>` tags (100% backward compatibility).
+*   **Lightweight & Zero Dependencies:** Extremely small footprint, written in TypeScript.
+*   **Reactive Attribute Binding:** Automatically monitors and re-renders components when attributes (`src`, `data`) change dynamically.
 
-Then, run the build script:
+---
 
-```bash
-npm run build
-```
+## 📦 Installation
 
-You can also clean the build artifacts or watch for file changes:
-
-```bash
-# Clean the build artifacts
-npm run clean
-
-# Watch for changes and compile automatically
-npm run watch
-```
-
-# How to use?
-
-Do reference sample project. The path of the script file can be different.
-
-## Preparing in HTML code
-
-Add the following code to the head area on your HTML file.
+### 1. Via CDN / Script Tag (Traditional)
+Add the built UMD scripts in the `<head>` or `<body>` area of your HTML file:
 
 ```html
 <script type="text/javascript" src="dist/umd/seastack.js"></script>
 <script type="text/javascript" src="dist/umd/seastack-onload.js"></script>
 ```
 
-Or add the following code in the head and body area to manually control the onload event.
-
-```html
-<script type="text/javascript" src="dist/umd/seastack.js"></script>
+### 2. Via NPM
+```bash
+npm install seastack
 ```
 
+---
+
+## 🛠️ How to Use
+
+Seastack provides three convenient ways to connect your HTML templates with data.
+
+### Method A: Declarative Web Component (Recommended)
+Simply declare a custom `<sea-stack>` element in your HTML. No additional JavaScript onload handler required!
+
+```html
+<!-- Automatically fetches component template and JSON data and renders seamlessly -->
+<sea-stack src="./html/tel-codes.html" data="./data/tel-codes.json"></sea-stack>
+```
+
+### Method B: HTML5 Attribute Bindings (Backward Compatible)
+Add the custom `sea-src` and `sea-data` attributes to a placeholder element:
+
+```html
+<div sea-src="./html/component.html" sea-data="./data/data.json"></div>
+```
+Ensure `seastack-onload.js` is included in your script imports, or initialize manually:
 ```html
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -63,14 +69,10 @@ Or add the following code in the head and body area to manually control the onlo
 </script>
 ```
 
-If you want, you can specify a specific Element instead of document.body in the code above.
+### Method C: Programmatic Module Imports (ESM & CommonJS)
+Import Seastack inside Webpack, Vite, Next.js, or Node.js environments:
 
-## Using as a Module (ESM & CommonJS)
-
-If you are using modern bundlers (Webpack, Vite, Rollup, etc.) or a Node.js environment, you can import and run Seastack.js programmatically:
-
-### ES Modules (ESM)
-
+#### ES Modules (ESM)
 ```javascript
 import { Core } from 'seastack';
 
@@ -79,8 +81,7 @@ seastack.getElements(document.body);
 await seastack.fillElements();
 ```
 
-### CommonJS (CJS)
-
+#### CommonJS (CJS)
 ```javascript
 const { Core } = require('seastack');
 
@@ -89,10 +90,10 @@ seastack.getElements(document.body);
 seastack.fillElements();
 ```
 
+---
 
-## Data
-
-You can freely specify data at a one-dimensional level in the form of an array in a property named seadata. The data may be one or more.
+## 📊 Data Format
+You can freely specify data in the form of an array under the property `seadata` (or `seaData`, `data`).
 
 ```json
 {
@@ -104,30 +105,19 @@ You can freely specify data at a one-dimensional level in the form of an array i
             "target": "_blank"
         },
         {
-            "number": "+1",
-            "name": "United States",
-            "link" : "https://en.wikipedia.org/wiki/United_States",
-            "target": "_blank"
-        },
-        {
             "number": "+20",
             "name": "Egypt",
             "link" : "https://en.wikipedia.org/wiki/Egypt",
-            "target": "_blank"
-        },
-        {
-            "number": "+30",
-            "name": "Greece",
-            "link" : "https://en.wikipedia.org/wiki/Greece",
             "target": "_blank"
         }
     ]
 }
 ```
 
-## HTML as component
+---
 
-Make the HTML fragment to which data will be applied as a separate file. We call this a component. In the component, you can connect the data by specifying the attributes prefixed with sea to the following target tags.
+## 🧩 HTML Components (Template)
+Create your HTML fragments (components) separately. You can map JSON properties by using `sea-` attributes:
 
 ```html
 <div>
@@ -138,106 +128,61 @@ Make the HTML fragment to which data will be applied as a separate file. We call
 </div>
 ```
 
-Attribute | Value
------------- | -------------
-sea-att | attribute name
-sea-att-val | attribute value
-sea-val | value to replace inner HTML
+### Attribute Mapping Reference
 
-If you want to apply the definition of data to multiple attributes, write as follows.
+| Attribute | Value Description |
+| :--- | :--- |
+| `sea-val` | Replaces the element's `innerHTML` with the JSON property value |
+| `sea-att` | Binds a single attribute name (e.g., `href`, `src`) |
+| `sea-att-val` | Maps the JSON property key for the attribute specified in `sea-att` |
+| `sea-atts` | Maps multiple attributes in a comma-separated key-value pairs (e.g., `href:link,target:target`) |
+| `sea-valueless-hidden` | Automatically adds `hidden` attribute if the `sea-val` value is empty |
+| `sea-att-valueless-hidden` | Automatically adds `hidden` attribute if the attribute value is empty |
 
-```html
-<div>
-    <span sea-val="number"></span>
-    <a sea-atts="href:link,target:target">
-        <span sea-val="name"></span>
-    </a>
-</div>
+---
+
+## 💻 Local Development & Contributions
+
+Contributions are highly welcome! Seastack is powered by **TypeScript**, **Rollup.js**, and **Vitest** to guarantee a modern development experience (DX).
+
+### 1. Setup
+Clone the repository and install all dependencies:
+```bash
+npm install
 ```
 
-Attribute | Value
------------- | -------------
-sea-atts | attribute sets like "name:value,name:value,..."
+### 2. Build Pipeline
+Generate production bundles for ESM, CJS, and UMD formats:
+```bash
+# Production compile
+npm run build
 
-In case there is no corresponding value in data, the following attribute can be added so that the hidden attribute is automatically added to the tag.
+# Development watch mode
+npm run watch
 
-```html
-<span sea-val="name" sea-valueless-hidden></span>
+# Clean previous build artifacts
+npm run clean
 ```
 
-If you want to make an element hidden when there is no data for a property other than a value, declare it as follows. (does not apply to multiple attributes)
+### 3. Linting & Formatting
+Enforce code formatting and quality:
+```bash
+# Check code style and typescript errors
+npm run lint
 
-```html
-<a sea-att="href" sea-att-val="link" sea-att-valueless-hidden>Link</a>
+# Auto-format codebase with Prettier
+npm run format
 ```
 
-Attribute | Value
------------- | -------------
-sea-valueless-hidden | Just declare the name without the value of the attribute.
-sea-att-valueless-hidden | Just declare the name without the value of the attribute.
-
-## Apply
-
-Connect the path of the HTML file that becomes the component and the data path to the first HTML file with the attribute prefixed with sea. The contents of the component are duplicated as many as the number of items defined in the data to replace the contents of the specified HTML element. You may not specify the data path. In this way, the contents of the component are statically imported and applied.
-
-```html
-<div sea-src="./html/component.html" sea-data="./data/data.json"></div>
+### 4. Running Automated Tests
+Run high-speed automated unit tests using Vitest in a simulated browser (Happy DOM) environment:
+```bash
+npm run test
 ```
 
-Attribute | Value
------------- | -------------
-sea-src | Path of HTML as component
-sea-data | Path of JSON data
+---
 
-If you want to apply data using the contents of the tag without any separate html component, declare the source as "#" as follows:
-
-```html
-<div sea-src="#" sea-data="./data/data.json">
-    <div>
-        <span sea-val="number"></span>
-        <a sea-att="href" sea-att-val="link">
-            <span sea-val="name"></span>
-        </a>
-    </div>
-</div>
-```
-
-## Result
-
-If you apply as above, you will get the following result. (This is an example)
-
-```html
-<div sea-src="./html/component.html" sea-data="./data/data.json">
-    <div>
-        <span sea-val="number">+1</span>
-        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/Canada">
-            <span sea-val="name">Canada</span>
-        </a>
-    </div>
-    <div>
-        <span sea-val="number">+1</span>
-        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/United_States">
-            <span sea-val="name">United States</span>
-        </a>
-    </div>
-    <div>
-        <span sea-val="number">+20</span>
-        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/Egypt">
-            <span sea-val="name">Egypt</span>
-        </a>
-    </div>
-    <div>
-        <span sea-val="number">+30</span>
-        <a sea-att="href" sea-att-val="link" href="https://en.wikipedia.org/wiki/Greece">
-            <span sea-val="name">Greece</span>
-        </a>
-    </div>
-</div>
-```
-
-# License
-
+## 📄 License
 Copyright (c) Neuro Associates. All rights reserved.
 
-
-Licensed under the [MIT](LICENSE.txt) License.
+Licensed under the [MIT](LICENSE) License.
