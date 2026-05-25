@@ -1,0 +1,1 @@
+{"version":3,"file":"SeaStackComponent.d.ts","sourceRoot":"","sources":["../../../src/core/SeaStackComponent.ts"],"names":[],"mappings":"AAEA,qBAAa,iBAAkB,SAAQ,WAAW;IAC9C,MAAM,KAAK,kBAAkB,aAE5B;IAED,OAAO,CAAC,gBAAgB,CAAS;;IAM3B,iBAAiB;IAKjB,wBAAwB,CAAC,IAAI,EAAE,MAAM,EAAE,QAAQ,EAAE,MAAM,EAAE,QAAQ,EAAE,MAAM;IAMzE,MAAM;CAcf"}

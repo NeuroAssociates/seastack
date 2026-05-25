@@ -1,12 +1,12 @@
 'use strict';
 
-var seastack = require('./seastack');
+var Core = require('./core/Core');
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const seastack$1 = new seastack.Core();
-        seastack$1.getElements(document.body);
-        await seastack$1.fillElements();
+        const seastack = new Core.Core();
+        seastack.getElements(document.body);
+        await seastack.fillElements();
     }
     catch (err) {
         console.error('Seastack initialization error:', err);

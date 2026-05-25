@@ -1,24 +1,5 @@
-export let tagNames = {
-    "source": "sea-src",
-    "dataPath": "sea-data",
-    "value": "sea-val",
-    "valuelessHidden": "sea-valueless-hidden",
-    "attributeName": "sea-att",
-    "attributeValue": "sea-att-val",
-    "attributeValuelessHidden": "sea-att-valueless-hidden",
-    "attributeSet": "sea-atts"
-};
-
-export class SeaAttribute {
-    name: string;
-    value: string;
-
-    constructor(name: string, value: string) {
-        this.name = name;
-        this.value = value;
-        return;
-    }
-}
+import { tagNames } from "../constants/tagNames";
+import { SeaAttribute } from "./SeaAttribute";
 
 export class SeaElement {
     element!: Element;
@@ -72,7 +53,9 @@ export class SeaElement {
 
         if (this.seaSource === "#") {
             const html = this.element.innerHTML;
-            this.element.innerHTML = this.HTMLwithData(html);
+            this.element.innerHTML = ""; // Clear template nodes safely
+            const fragment = this.HTMLwithDataFragment(html);
+            this.element.appendChild(fragment);
             return this;
         }
 
@@ -86,7 +69,8 @@ export class SeaElement {
             }
 
             const html = await response.text();
-            this.element.innerHTML = this.element.innerHTML + this.HTMLwithData(html);
+            const fragment = this.HTMLwithDataFragment(html);
+            this.element.appendChild(fragment);
             return this;
         }
         catch (err) {
@@ -95,25 +79,29 @@ export class SeaElement {
         }
     }
 
-    HTMLwithData(html: string): string {
-        if (!this.seaData || this.seaData.length === 0) return html;
+    HTMLwithDataFragment(html: string): DocumentFragment {
+        const fragment = document.createDocumentFragment();
+        if (!this.seaData || this.seaData.length === 0) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            while (temp.firstChild) {
+                fragment.appendChild(temp.firstChild);
+            }
+            return fragment;
+        }
 
-        const root = document.createElement('div');
-
-        // create a temporary container for the template HTML
         const templateContainer = document.createElement('div');
         templateContainer.innerHTML = html;
 
         this.seaData.forEach(dataItem => {
-            // clone each top-level node from the template container
             Array.from(templateContainer.children).forEach(node => {
                 const clone = node.cloneNode(true) as Element;
                 this.applyDataToElement(clone, dataItem);
-                root.appendChild(clone);
+                fragment.appendChild(clone);
             });
         });
 
-        return root.innerHTML;
+        return fragment;
     }
 
     // Walk node tree and apply attribute/value bindings for a single data item
@@ -168,43 +156,5 @@ export class SeaElement {
 
         // recurse into children
         Array.from(el.children).forEach(child => this.applyDataToElement(child as Element, data));
-    }
-}
-
-export class Core {
-    seaElements: Array<SeaElement>;
-
-    constructor() {
-        this.seaElements = new Array();
-    }
-
-    getElements(rootElement: Element): Core {
-        this.seaElements = new Array();
-        this.getElementsFromChildren(rootElement);
-        return this;
-    }
-
-    getElementsFromChildren(rootElement: Element) {
-        if (!(rootElement instanceof Element)) return;
-        
-        Array.from(rootElement.children).forEach(childElement => {
-            var seaElement = new SeaElement(childElement);
-            
-            if (seaElement.isValid() === true) {
-                this.seaElements.push(seaElement);
-            } 
-            else {
-                this.getElementsFromChildren(childElement);
-            }
-        });
-        
-        return;
-    }
-
-    async fillElements(): Promise<Core> {
-        for (const element of this.seaElements) {
-            await element.fill();
-        }
-        return this;
     }
 }

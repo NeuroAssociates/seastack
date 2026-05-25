@@ -6,16 +6,16 @@
   "main": "dist/cjs/seastack.js",
   "module": "dist/esm/seastack.js",
   "browser": "dist/umd/seastack.js",
-  "types": "dist/esm/types/seastack.d.ts",
+  "types": "dist/esm/types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/types/seastack.d.ts",
+      "types": "./dist/esm/types/index.d.ts",
       "import": "./dist/esm/seastack.js",
       "require": "./dist/cjs/seastack.js",
       "default": "./dist/umd/seastack.js"
     },
     "./onload": {
-      "types": "./dist/esm/types/seastack-onload.d.ts",
+      "types": "./dist/esm/types/onload.d.ts",
       "import": "./dist/esm/seastack-onload.js",
       "require": "./dist/cjs/seastack-onload.js",
       "default": "./dist/umd/seastack-onload.js"

@@ -1,4 +1,4 @@
-let tagNames = {
+const tagNames = {
     "source": "sea-src",
     "dataPath": "sea-data",
     "value": "sea-val",
@@ -8,13 +8,14 @@ let tagNames = {
     "attributeValuelessHidden": "sea-att-valueless-hidden",
     "attributeSet": "sea-atts"
 };
+
 class SeaAttribute {
     constructor(name, value) {
         this.name = name;
         this.value = value;
-        return;
     }
 }
+
 class SeaElement {
     constructor(targetElement) {
         this.seaSource = null;
@@ -60,7 +61,9 @@ class SeaElement {
             return this;
         if (this.seaSource === "#") {
             const html = this.element.innerHTML;
-            this.element.innerHTML = this.HTMLwithData(html);
+            this.element.innerHTML = ""; // Clear template nodes safely
+            const fragment = this.HTMLwithDataFragment(html);
+            this.element.appendChild(fragment);
             return this;
         }
         if (!this.seaSource)
@@ -72,7 +75,8 @@ class SeaElement {
                 return this;
             }
             const html = await response.text();
-            this.element.innerHTML = this.element.innerHTML + this.HTMLwithData(html);
+            const fragment = this.HTMLwithDataFragment(html);
+            this.element.appendChild(fragment);
             return this;
         }
         catch (err) {
@@ -80,22 +84,26 @@ class SeaElement {
             return this;
         }
     }
-    HTMLwithData(html) {
-        if (!this.seaData || this.seaData.length === 0)
-            return html;
-        const root = document.createElement('div');
-        // create a temporary container for the template HTML
+    HTMLwithDataFragment(html) {
+        const fragment = document.createDocumentFragment();
+        if (!this.seaData || this.seaData.length === 0) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            while (temp.firstChild) {
+                fragment.appendChild(temp.firstChild);
+            }
+            return fragment;
+        }
         const templateContainer = document.createElement('div');
         templateContainer.innerHTML = html;
         this.seaData.forEach(dataItem => {
-            // clone each top-level node from the template container
             Array.from(templateContainer.children).forEach(node => {
                 const clone = node.cloneNode(true);
                 this.applyDataToElement(clone, dataItem);
-                root.appendChild(clone);
+                fragment.appendChild(clone);
             });
         });
-        return root.innerHTML;
+        return fragment;
     }
     // Walk node tree and apply attribute/value bindings for a single data item
     applyDataToElement(el, data) {
@@ -145,6 +153,7 @@ class SeaElement {
         Array.from(el.children).forEach(child => this.applyDataToElement(child, data));
     }
 }
+
 class Core {
     constructor() {
         this.seaElements = new Array();
@@ -176,5 +185,39 @@ class Core {
     }
 }
 
-export { Core, SeaAttribute, SeaElement, tagNames };
+class SeaStackComponent extends HTMLElement {
+    static get observedAttributes() {
+        return ['src', 'data'];
+    }
+    constructor() {
+        super();
+        this.isConnectedToDom = false;
+    }
+    async connectedCallback() {
+        this.isConnectedToDom = true;
+        await this.render();
+    }
+    async attributeChangedCallback(name, oldValue, newValue) {
+        if (this.isConnectedToDom && oldValue !== newValue) {
+            await this.render();
+        }
+    }
+    async render() {
+        const src = this.getAttribute('src');
+        const data = this.getAttribute('data');
+        if (!src)
+            return;
+        // Clear existing rendering for proper reactivity
+        this.innerHTML = "";
+        const seaElement = new SeaElement(this);
+        seaElement.seaSource = src;
+        seaElement.seaDataPath = data;
+        await seaElement.fill();
+    }
+}
+if (typeof window !== 'undefined' && 'customElements' in window) {
+    customElements.define('sea-stack', SeaStackComponent);
+}
+
+export { Core, SeaAttribute, SeaElement, SeaStackComponent, tagNames };
 //# sourceMappingURL=seastack.js.map

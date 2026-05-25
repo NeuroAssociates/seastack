@@ -3,9 +3,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 
 export default [
-  // 1. seastack.ts 빌드 (ESM, CJS, UMD)
+  // 1. src/index.ts 빌드 (ESM, CJS, UMD)
   {
-    input: 'src/seastack.ts',
+    input: 'src/index.ts',
     output: [
       {
         file: 'dist/esm/seastack.js',
@@ -34,9 +34,9 @@ export default [
       })
     ]
   },
-  // 2. seastack-onload.ts 빌드 (ESM, CJS, UMD)
+  // 2. src/onload.ts 빌드 (ESM, CJS, UMD)
   {
-    input: 'src/seastack-onload.ts',
+    input: 'src/onload.ts',
     output: [
       {
         file: 'dist/esm/seastack-onload.js',
@@ -54,11 +54,11 @@ export default [
         name: 'SeastackOnload',
         sourcemap: true,
         globals(id) {
-          if (id.includes('seastack')) return 'Seastack';
+          if (id.includes('seastack') || id.includes('Core')) return 'Seastack';
         }
       }
     ],
-    external: ['./seastack', './seastack.ts'],
+    external: ['./core/Core', './core/Core.ts'],
     plugins: [
       resolve(),
       commonjs(),

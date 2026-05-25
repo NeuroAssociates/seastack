@@ -1,4 +1,4 @@
-import { Core } from "./seastack";
+import { Core } from "./core/Core";
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
