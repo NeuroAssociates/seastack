@@ -1,4 +1,4 @@
-[![GitHub version](https://img.shields.io/badge/version-1.0-blue)](https://github.com/NeuroAssociates/seastack/releases/tag/Release)
+[![GitHub version](https://img.shields.io/badge/version-2.0-blue)](https://github.com/NeuroAssociates/seastack/releases/tag/Release)
 [![GitHub issues](https://img.shields.io/github/issues/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/issues)
 [![GitHub forks](https://img.shields.io/github/forks/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/network)
 [![GitHub stars](https://img.shields.io/github/stars/NeuroAssociates/seastack)](https://github.com/NeuroAssociates/seastack/stargazers)
@@ -13,8 +13,26 @@ The final goal of the project is to quickly generate web documents by associatin
 
 # How to build?
 
+First, install the development dependencies:
+
+```bash
+npm install
 ```
-tsc --project tsconfig.json
+
+Then, run the build script:
+
+```bash
+npm run build
+```
+
+You can also clean the build artifacts or watch for file changes:
+
+```bash
+# Clean the build artifacts
+npm run clean
+
+# Watch for changes and compile automatically
+npm run watch
 ```
 
 # How to use?
@@ -26,14 +44,14 @@ Do reference sample project. The path of the script file can be different.
 Add the following code to the head area on your HTML file.
 
 ```html
-<script type="text/javascript" src="seastack.js"></script>
-<script type="text/javascript" src="seastack-onload.js"></script>
+<script type="text/javascript" src="dist/umd/seastack.js"></script>
+<script type="text/javascript" src="dist/umd/seastack-onload.js"></script>
 ```
 
 Or add the following code in the head and body area to manually control the onload event.
 
 ```html
-<script type="text/javascript" src="seastack.js"></script>
+<script type="text/javascript" src="dist/umd/seastack.js"></script>
 ```
 
 ```html
@@ -46,6 +64,30 @@ Or add the following code in the head and body area to manually control the onlo
 ```
 
 If you want, you can specify a specific Element instead of document.body in the code above.
+
+## Using as a Module (ESM & CommonJS)
+
+If you are using modern bundlers (Webpack, Vite, Rollup, etc.) or a Node.js environment, you can import and run Seastack.js programmatically:
+
+### ES Modules (ESM)
+
+```javascript
+import { Core } from 'seastack';
+
+const seastack = new Core();
+seastack.getElements(document.body);
+await seastack.fillElements();
+```
+
+### CommonJS (CJS)
+
+```javascript
+const { Core } = require('seastack');
+
+const seastack = new Core();
+seastack.getElements(document.body);
+seastack.fillElements();
+```
 
 
 ## Data

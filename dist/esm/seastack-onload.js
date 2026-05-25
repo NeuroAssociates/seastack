@@ -1,8 +1,8 @@
-"use strict";
-// import { Seastack } from "./seastack";
+import { Core } from './seastack';
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const seastack = new Seastack.Core();
+        const seastack = new Core();
         seastack.getElements(document.body);
         await seastack.fillElements();
     }

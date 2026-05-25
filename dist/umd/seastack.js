@@ -1,7 +1,10 @@
-"use strict";
-var Seastack;
-(function (Seastack) {
-    Seastack.tagNames = {
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Seastack = {}));
+})(this, (function (exports) { 'use strict';
+
+    let tagNames = {
         "source": "sea-src",
         "dataPath": "sea-data",
         "value": "sea-val",
@@ -18,7 +21,6 @@ var Seastack;
             return;
         }
     }
-    Seastack.SeaAttribute = SeaAttribute;
     class SeaElement {
         constructor(targetElement) {
             this.seaSource = null;
@@ -27,8 +29,8 @@ var Seastack;
             if (!(targetElement instanceof Element))
                 throw new Error('SeaElement requires an Element');
             this.element = targetElement;
-            this.seaSource = targetElement.getAttribute(Seastack.tagNames.source);
-            this.seaDataPath = targetElement.getAttribute(Seastack.tagNames.dataPath);
+            this.seaSource = targetElement.getAttribute(tagNames.source);
+            this.seaDataPath = targetElement.getAttribute(tagNames.dataPath);
             this.seaAttributes = [];
         }
         isValid() {
@@ -105,9 +107,9 @@ var Seastack;
         applyDataToElement(el, data) {
             // process this element
             const attrs = [];
-            const seaAttributeName = el.getAttribute(Seastack.tagNames.attributeName);
-            const seaAttributeValue = el.getAttribute(Seastack.tagNames.attributeValue);
-            const seaAttributeValuelessHidden = el.getAttribute(Seastack.tagNames.attributeValuelessHidden);
+            const seaAttributeName = el.getAttribute(tagNames.attributeName);
+            const seaAttributeValue = el.getAttribute(tagNames.attributeValue);
+            const seaAttributeValuelessHidden = el.getAttribute(tagNames.attributeValuelessHidden);
             if (seaAttributeName && seaAttributeName.length > 0 && seaAttributeValue && seaAttributeValue.length > 0) {
                 const val = data[seaAttributeValue];
                 if (val != null && String(val).length > 0) {
@@ -117,7 +119,7 @@ var Seastack;
                     el.setAttribute('hidden', '');
                 }
             }
-            const seaAttributeSet = el.getAttribute(Seastack.tagNames.attributeSet);
+            const seaAttributeSet = el.getAttribute(tagNames.attributeSet);
             if (seaAttributeSet) {
                 const attributes = seaAttributeSet.split(',');
                 attributes.forEach(attribute => {
@@ -134,8 +136,8 @@ var Seastack;
                 if (value != null)
                     el.setAttribute(attribute.name, String(value));
             });
-            const seaValue = el.getAttribute(Seastack.tagNames.value);
-            const seaValuelessHidden = el.getAttribute(Seastack.tagNames.valuelessHidden);
+            const seaValue = el.getAttribute(tagNames.value);
+            const seaValuelessHidden = el.getAttribute(tagNames.valuelessHidden);
             if (seaValue && seaValue.length > 0) {
                 const v = data[seaValue];
                 if (v != null && String(v).length > 0) {
@@ -149,7 +151,6 @@ var Seastack;
             Array.from(el.children).forEach(child => this.applyDataToElement(child, data));
         }
     }
-    Seastack.SeaElement = SeaElement;
     class Core {
         constructor() {
             this.seaElements = new Array();
@@ -173,8 +174,6 @@ var Seastack;
             });
             return;
         }
-        // fillElements now awaits each element.fill() to ensure data/template
-        // processing completes before returning.
         async fillElements() {
             for (const element of this.seaElements) {
                 await element.fill();
@@ -182,6 +181,11 @@ var Seastack;
             return this;
         }
     }
-    Seastack.Core = Core;
-})(Seastack || (Seastack = {}));
+
+    exports.Core = Core;
+    exports.SeaAttribute = SeaAttribute;
+    exports.SeaElement = SeaElement;
+    exports.tagNames = tagNames;
+
+}));
 //# sourceMappingURL=seastack.js.map
