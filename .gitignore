@@ -3,3 +3,9 @@ npm-debug.log
 Thumbs.db
 node_modules/
 package-lock.json
+dist/
+coverage/
+*.log
+.eslintcache
+.vitest-cache/
+.gemini/
